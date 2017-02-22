@@ -2,3 +2,6 @@
 /node_modules
 .idea
 node_modules
+common
+004/lib/js
+004/models
