@@ -2,22 +2,14 @@ const threeApp = require('./lib/createThree');
 const { camera, scene, renderer, controls } = threeApp();
 
 const glsl = require('glslify');
-
-
-const simpleFrag = glsl.file('./shader/shader.frag');
-const simpleVert = glsl.file('./shader/shader.vert');
-
 const particleFragmentShader = glsl.file('./shader/particleFragmentShader.frag');
 const particleVertexShader = glsl.file('./shader/particleVertexShader.vert');
 const computeShaderPosition = glsl.file('./shader/computeShaderPosition.frag');
 const computeShaderVelocity = glsl.file('./shader/computeShaderVelocity.vert');
 
-var mesh;
-var helper, ikHelper;
-var clock = new THREE.Clock();
 
 // Texture width for simulation (each texel is a debris particle)
-var WIDTH = 128;
+var WIDTH = 1024
 
 var geometry;
 var PARTICLES = WIDTH * WIDTH;
@@ -29,8 +21,21 @@ var positionUniforms;
 var velocityUniforms;
 var particleUniforms;
 
+
+let rl = 0.0;
+let tt1 = 1;
+let tt2 = 1;
+var t1 = 3;
+var t2 = 2;
+var obj = {
+    t1:3,
+    t2:2
+};
+
+
 init();
 animate();
+
 
 
 function init() {
@@ -39,94 +44,6 @@ function init() {
     camera.position.x = 0;
     camera.position.z = -150;
     camera.lookAt(new THREE.Vector3());
-
-
-
-
-
-
-
-    // model
-    var onProgress = function ( xhr ) {
-        if ( xhr.lengthComputable ) {
-            var percentComplete = xhr.loaded / xhr.total * 100;
-            console.log( Math.round(percentComplete, 2) + '% downloaded' );
-        }
-    };
-
-    var onError = function ( xhr ) {
-    };
-
-    var modelFile = 'models/mmd/miku/miku_v2.pmd';
-    var vmdFiles = [ 'models/mmd/vmds/wavefile_v2.vmd' ];
-
-    helper = new THREE.MMDHelper();
-
-    var loader = new THREE.MMDLoader();
-    loader.load( modelFile, vmdFiles, function ( object ) {
-
-        var array = [];
-        for ( var i = 0, il = object.material.materials.length; i < il; i ++ ) {
-            var m = new THREE.ShaderMaterial({
-                vertexShader:   simpleVert,
-                fragmentShader: simpleFrag,
-                skinning:true
-            });
-            array.push( m );
-        }
-
-        var shaderMaterials = new THREE.MultiMaterial( array );
-        object.material = shaderMaterials;
-
-        mesh = object;
-        mesh.position.y = -10;
-
-        scene.add( mesh );
-
-        helper.add( mesh );
-        helper.setAnimation( mesh );
-
-        /*
-         * Note: create CCDIKHelper after calling helper.setAnimation()
-         */
-        ikHelper = new THREE.CCDIKHelper( mesh );
-        ikHelper.visible = false;
-        scene.add( ikHelper );
-
-        initGui();
-
-    }, onProgress, onError );
-
-    function initGui () {
-        var api = {
-            'animation': true,
-            'ik': true,
-            'physics': true,
-            'show IK bones': false,
-        };
-        var gui = new dat.GUI();
-        gui.add( api, 'animation' ).onChange( function () {
-            helper.doAnimation = api[ 'animation' ];
-        } );
-        gui.add( api, 'ik' ).onChange( function () {
-            helper.doIk = api[ 'ik' ];
-        } );
-        gui.add( api, 'physics' ).onChange( function () {
-            helper.enablePhysics( api[ 'physics' ] );
-        } );
-        gui.add( api, 'show IK bones' ).onChange( function () {
-            ikHelper.visible = api[ 'show IK bones' ];
-        } );
-    }
-
-
-
-
-
-
-
-
-
 
     initComputeRenderer();
 
@@ -159,6 +76,15 @@ function initComputeRenderer() {
         value:0
     };
 
+    velocityVariable.material.uniforms.t1 = {
+        value:obj.t1
+    };
+
+    velocityVariable.material.uniforms.t2 = {
+        value:obj.t2
+    };
+
+
     gpuCompute.init();
 
 }
@@ -169,6 +95,7 @@ function initProtoplanets() {
     geometry = new THREE.BufferGeometry();
 
     var positions = new Float32Array( PARTICLES * 3 );
+    console.log("aaaaa",positions.length);
 
     for ( var i = 0; i < PARTICLES * 3; i+= 3 * 3 ) {
         positions[ i+0 ] = Math.random() * 1;
@@ -213,11 +140,20 @@ function initProtoplanets() {
 
     material.extensions.drawBuffers = true;
 
-    var particles = new THREE.Points( geometry, material );
+    // var particles0 = new THREE.Points( geometry, material );
+    // particles0.matrixAutoUpdate = false;
+    // particles0.updateMatrix();
+    // scene.add( particles0 );
+
+    var particles = new THREE.Mesh( geometry, material );
     particles.matrixAutoUpdate = false;
     particles.updateMatrix();
     scene.add( particles );
 
+    // var particles2 = new THREE.Line( geometry, material );
+    // particles2.matrixAutoUpdate = false;
+    // particles2.updateMatrix();
+    // scene.add( particles2 );
 }
 
 function fillTextures( texturePosition, textureVelocity ) {
@@ -256,7 +192,7 @@ function fillTextures( texturePosition, textureVelocity ) {
 
         // 移動する方向はとりあえずランダムに決めてみる。
         // これでランダムな方向にとぶパーティクルが出来上がるはず。
-        var velX = 0.;//(Math.random()*1.0);
+        var velX = 0.1;//(Math.random()*1.0);
         var velY = 0.;//(Math.random()*2.0);
         var velZ = 0.;//(Math.random()*2.0);
 
@@ -297,9 +233,43 @@ function render() {
 
     velocityVariable.material.uniforms.time.value += 1/60;
 
+    obj.t1 += (tt1 - obj.t1 )/2000.0;
+    obj.t2 += (tt2 - obj.t2 )/2000.0;
+
+    velocityVariable.material.uniforms.t1.value = obj.t1;
+    velocityVariable.material.uniforms.t2.value = obj.t2;
+
+    // t1
+    // t2 += (tt2 - t2 )/20.0;
+    rl += 1;
+    if( rl > 120 ){
+        rl = 0;
+        tt1 = 1 + Math.random() * 10;
+        tt2 = 1 + Math.random() * 10;
+    }
+
+    // if( velocityVariable.material.uniforms.t1.value ){
+    //     console.log("aaaaaaa",velocityVariable.material.uniforms.t1.value,velocityVariable.material.uniforms.t1)
+    //     velocityVariable.material.uniforms.t1.value = t1;
+    //     console.log("aaaaaaa",velocityVariable.material.uniforms.t1.value,velocityVariable.material.uniforms.t1)
+    //
+    // }
+
+    // if( velocityVariable.material.uniforms.t2.value ){
+    //     velocityVariable.material.uniforms.t2.value = t2;
+    // }
+
+
+
+
+
     particleUniforms.texturePosition.value = gpuCompute.getCurrentRenderTarget( positionVariable ).texture;
     particleUniforms.textureVelocity.value = gpuCompute.getCurrentRenderTarget( velocityVariable ).texture;
 
     renderer.render( scene, camera );
+
+
+
+
 
 }
