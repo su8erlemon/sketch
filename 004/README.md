@@ -1,1 +1,1 @@
-# prototyping-threejs-template
+# Passing mmd animation data to GPU

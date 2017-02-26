@@ -1,1 +1,1 @@
-# prototyping-threejs-template
+# Passing data to GPU as texture sample
