@@ -111,6 +111,13 @@ mat3 transpose( const in mat3 v ) {
 
 
 
+//varying vec4 vPosition;
+varying vec3 vColor;
+attribute float index2;
+
+const float frag = 1.0 / 128.;
+const float texShift = 0.5 * frag;
+
 void main() {
 
   vec3 transformed = vec3(position + normal * offset);
@@ -122,6 +129,7 @@ void main() {
 
 	vec4 skinVertex = bindMatrix * vec4( transformed, 1.0 );
 	vec4 skinned = vec4( 0.0 );
+
 	skinned += boneMatX * skinVertex * skinWeight.x;
 	skinned += boneMatY * skinVertex * skinWeight.y;
 	skinned += boneMatZ * skinVertex * skinWeight.z;
@@ -130,6 +138,17 @@ void main() {
 
 	vec4 mvPosition = modelViewMatrix * skinned;
 
-  gl_Position = projectionMatrix * mvPosition;
+  vec4 pos1 = modelMatrix * skinned * 0.1;
+  //  vec4 pos1 = vec4(position,1.0);
+  //  vColor = ((normalize(pos1) + 1.0) * 0.5).xyz;
+  vColor = (1.0 + pos1.xyz) * 0.5;
+
+  float pu = fract(index2 * frag) * 2.0 - 1.0;
+  float pv = floor(index2 * frag) * frag * 2.0 - 1.0;
+  gl_Position = vec4(pu + texShift, pv + texShift, 0.0, 1.0);
+  gl_PointSize = 1.0;
+
+//  vPosition = skinned;
+  //gl_Position = projectionMatrix * mvPosition;
 
  }

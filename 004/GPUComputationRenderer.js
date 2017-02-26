@@ -224,6 +224,7 @@ function GPUComputationRenderer( sizeX, sizeY, renderer ) {
             if ( variable.dependencies !== null ) {
 
                 var uniforms = variable.material.uniforms;
+
                 for ( var d = 0, dl = variable.dependencies.length; d < dl; d++ ) {
 
                     var depVar = variable.dependencies[ d ];
