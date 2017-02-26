@@ -16,8 +16,8 @@ camera.lookAt(new THREE.Vector3());
 var bufferScene = new THREE.Scene();
 // Create the texture that will store our result
 var bufferTexture = new THREE.WebGLRenderTarget(
-    128,
-    128,
+    8,
+    8,
     {
         minFilter: THREE.LinearFilter,
         magFilter: THREE.NearestFilter
@@ -31,7 +31,7 @@ var shaderMaterial2 =
         vertexShader:   simpleVert2,
         fragmentShader: simpleFrag2
     });
-var boxGeometry =  new THREE.BoxBufferGeometry( 1, 1, 1, 4, 4 );
+var boxGeometry =  new THREE.BoxBufferGeometry( 1, 1, 1, 2,  2 );
 // var boxGeometry = new THREE.SphereBufferGeometry( 1, 32, 32 );
 // var boxGeometry = new THREE.ParametricBufferGeometry( THREE.ParametricGeometries.klein, 25, 25 );
 // var boxGeometry = new THREE.TorusBufferGeometry( 0.1, 0.4, 43, 10 );
@@ -60,7 +60,7 @@ var shaderMaterial = new THREE.ShaderMaterial({
     vertexShader:   simpleVert,
     fragmentShader: simpleFrag
 });
-var box1 = new THREE.Line(boxGeometry, shaderMaterial)
+var box1 = new THREE.Points(boxGeometry, shaderMaterial)
 scene.add(box1);
 
 

@@ -10,7 +10,7 @@ uniform sampler2D texture1;
 //varying vec4 vColor;
 
 attribute float index1;
-const float frag = 1.0 / 128.0;
+const float frag = 1.0 / 8.0;
 const float texShift = 0.5 * frag;
 
 void main() {
@@ -20,6 +20,6 @@ void main() {
     vec3 tPosition = texture2D(texture1, vec2(pu, pv)).rgb * 2.0 - 1.0;
 
     gl_Position  = projectionMatrix * viewMatrix * vec4(tPosition, 1.0);
-    gl_PointSize = 4.0;
+    gl_PointSize = 32.0;
 
 }

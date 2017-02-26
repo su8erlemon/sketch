@@ -9,7 +9,7 @@
 varying vec3 vColor;
 attribute float index1;
 
-const float frag = 1.0 / 128.;
+const float frag = 1.0 / 8.;
 const float texShift = 0.5 * frag;
 
 void main() {
