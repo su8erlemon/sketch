@@ -120,7 +120,7 @@ function initProtoplanets() {
 
     var positions = new Float32Array( PARTICLES * 3 );
 
-    var dr = 0.1;
+    var dr = 0.0;
     for ( var i = 0; i < PARTICLES * 3; i+= 3 * 3 ) {
         positions[ i+0 ] = Math.random() * dr;
         positions[ i+1 ] = Math.random() * dr;
@@ -247,7 +247,7 @@ function initProtoplanets() {
             vertexShader:   debugMMDVert,
             transparent: true,
         });
-        var box1 = new THREE.Mesh(mmdMesh.geometry, shaderMaterial)
+        var box1 = new THREE.Points(mmdMesh.geometry, shaderMaterial)
         scene.add(box1);
 
 

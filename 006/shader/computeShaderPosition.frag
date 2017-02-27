@@ -1,6 +1,6 @@
 
 #define delta ( 1.0 / 60.0 )
-#define area 5.0
+#define area 2.0
 
 //varying vec4 vColor;
 

@@ -32,12 +32,12 @@ void main() {
 
     vec3 vel = vec3(tmpVel.zzw) * speed;
 
-    float theta = snoise( tmpPos.xyz * (0.3 + cos(time)*0.1)  )*6.28;
+    float theta = snoise( tmpPos.xyz * (0.3 + idParticle*0.0005 + cos(time)*0.1)  )*6.28;
     vel += vec3( cos(theta), sin(theta), 0.0 ) * speed;
 
     vel.z *= -0.;
-    vel.z += -0.03;
-//    vel.y += 0.02;
+    vel.z += -0.020;
+    vel.y += 0.005;
 
 
     gl_FragColor = vec4( vel.xyz, tmpVel.w );

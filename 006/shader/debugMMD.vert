@@ -20,6 +20,6 @@ void main() {
     vec3 tPosition = texture2D(texture1, vec2(pu, pv)).rgb * 2.0 - 1.0;
 
     gl_Position  = projectionMatrix * viewMatrix * vec4(tPosition, 1.0);
-    gl_PointSize = 1.0;
+    gl_PointSize = 2.0;
 
 }
