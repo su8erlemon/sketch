@@ -1,0 +1,27 @@
+{
+  "name": "prototyping-template",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "budo main.js:build.js --live --open -- -t babelify -t glslify",
+    "build": "browserify main.js -t babelify -t glslify | uglifyjs -cm > build.js",
+    "deploy": "npm run build && npm run deploy:upload",
+    "deploy:upload": "surge -p ./"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-preset-es2015": "^6.22.0",
+    "babelify": "^7.3.0",
+    "browserify": "^14.0.0",
+    "budo": "^9.4.7",
+    "glslify": "^6.0.1",
+    "surge": "^0.18.0",
+    "three-orbit-controls": "^82.1.0",
+    "uglify-js": "^2.7.5"
+  },
+  "dependencies": {
+    "three": "^0.84.0"
+  }
+}

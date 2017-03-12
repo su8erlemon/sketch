@@ -28,7 +28,8 @@ void main() {
 
 //  float index = uv.x * 128. * uv.y * 128.;
 //  float index = rand(uv) * 5461. ;
-  float index = rand(uv) * 12200. ;
+  //float index = rand(uv) * 12200. ;
+  float index = tmpPos.w;
 
   float pu = fract(index * frag + texShift);
   float pv = floor(index * frag) * frag + texShift;
@@ -38,8 +39,13 @@ void main() {
   vec3 pos = tmpPos.xyz;
   vec3 vel = tmpVel.xyz;
 
-  float theta = snoise( tmpPos.xyz * (0.3 + idParticle*0.0005 + cos(time)*0.1)  )*6.28;
-  vel += vec3( cos(theta), sin(theta), 0.0 ).x * 1.0;
+//  float theta = snoise( tmpPos.xyz * (0.9) )*6.28;
+//  vel += vec3( cos(theta), sin(theta), 0.0 )*0.03;
+
+//  vel *= 0.00;
+//  float theta = snoise( tmpPos.xyz * (0.3 + cos(time)*0.1)  )*6.28;
+//  float theta = snoise( tmpPos.xyz * (1.0) )*6.28;
+//  vel += vec3( cos(theta), sin(theta), -1.0 )*0.03;
 
 //  vel.z += -0.0001;
 
@@ -47,7 +53,7 @@ void main() {
   pos += vel;// * delta;
 
 
-//pos += vec3(0.0,0.0,-0.01);
+//  pos += vec3(0.0,0.0,-0.1);
 //   pos = tmpDan;
 //  pos.x>area?pos=vec3(pos.x-area*2.0, pos.y         , pos.z         ):vec3(0.0);
 //  pos.y>area?pos=vec3(pos.x         , pos.y-area*2.0, pos.z         ):vec3(0.0);
@@ -57,14 +63,21 @@ void main() {
 //  pos.y<-area?pos=vec3(pos.x         , pos.y+area*2.0, pos.z         ):vec3(0.0);
 //  pos.z<-area?pos=vec3(pos.x         , pos.y         , pos.z+area*2.0):vec3(0.0);
 
+//  pos.x>area?pos=vec3(pos.x-tmpDan.x , pos.y          , pos.z    ):vec3(0.0);
+//  pos.y>area?pos=vec3(pos.x          , pos.y-tmpDan.y , pos.z    ):vec3(0.0);
+//  pos.z>area?pos=vec3(pos.x          , pos.y          , pos.z-tmpDan.z ):vec3(0.0);
+//
+//  pos.x<-area?pos=vec3(pos.x+tmpDan.x, pos.y          , pos.z    ):vec3(0.0);
+//  pos.y<-area?pos=vec3(pos.x         , pos.y+tmpDan.y , pos.z    ):vec3(0.0);
+//  pos.z<-area?pos=vec3(pos.x         , pos.y          , pos.z+tmpDan.z ):vec3(0.0);
 
   pos.x>area?pos=tmpDan:vec3(0.0);
   pos.y>area?pos=tmpDan:vec3(0.0);
-  pos.z>area?pos=tmpDan:vec3(0.0);
+  pos.z>area*2.0?pos=tmpDan:vec3(0.0);
 
   pos.x<-area?pos=tmpDan:vec3(0.0);
   pos.y<-area?pos=tmpDan:vec3(0.0);
-  pos.z<-area?pos=tmpDan:vec3(0.0);
+  pos.z<-area*2.0?pos=tmpDan:vec3(0.0);
 
 
 

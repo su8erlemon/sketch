@@ -26,7 +26,8 @@ void main() {
     float zzz = pos.z/-2.0;
 //    vColor = vec4( 1.0 - velTemp.xxx * 50.0, 0.8  - zzz * 0.8);
 //    vColor = vec4( 63.0/255.0, 81.0/255.0, 100.0/255.0,  0.7  - zzz * 0.7 );
-    vColor = vec4( 240./255.0, 240./255.0, 240./255.0,  0.7  - zzz * 0.7 );
+//    vColor = vec4( 240./255.0, 240./255.0, 240./255.0,  0.7  - zzz * 0.7 );
+    vColor = vec4( .0, 240./255.0, .0,  0.3  - zzz * 0.3);
 
     pos += position;
 

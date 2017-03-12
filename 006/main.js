@@ -310,9 +310,9 @@ function fillTextures( texturePosition, textureVelocity ) {
 
         // 移動する方向はとりあえずランダムに決めてみる。
         // これでランダムな方向にとぶパーティクルが出来上がるはず。
-        var velX = 0.0;//(Math.random()*1.0);
-        var velY = 0.0;//(Math.random()*2.0);
-        var velZ = 0.0;//(Math.random()*2.0);
+        var velX = Math.random()*0.01 - 0.005;
+        var velY = Math.random()*0.01 - 0.005;
+        var velZ = Math.random()*0.01 - 0.005;
 
         w = 0.5+Math.random()*0.5;
 
@@ -360,6 +360,7 @@ function render() {
     gpuCompute.compute();
 
     velocityVariable.material.uniforms.time.value += 1/60;
+    positionVariable.material.uniforms.time.value += 1/60;
 
     velocityVariable.material.uniforms.texture1.value = bufferTexture.texture;
     positionVariable.material.uniforms.texture1.value = bufferTexture.texture;
