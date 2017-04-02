@@ -497,7 +497,6 @@ function fillTextures( texturePosition, textureVelocity ) {
 
 }
 
-
 function getCameraConstant( camera ) {
     return window.innerHeight / ( Math.tan( THREE.Math.DEG2RAD * 0.5 * camera.fov ) / camera.zoom );
 }
@@ -507,15 +506,16 @@ function animate() {
     render();
 }
 
-
 function render() {
 
     helper.animate( clock.getDelta() );
 
     // Render onto our off-screen texture
+    // draw mmd skinned mesh data to bufferTexture
     renderer.render(bufferScene, camera, bufferTexture);
 
     if( uniforms2 ){
+        // pass to DebugMMD shader ?
         uniforms2.texture1.value = bufferTexture.texture;
     }
 
@@ -524,12 +524,23 @@ function render() {
     velocityVariable.material.uniforms.time.value += 1/60;
     positionVariable.material.uniforms.time.value += 1/60;
 
+    //pass mmd skineed mesh data to computeShaderVelocity shader to calculate particle velocity
     velocityVariable.material.uniforms.texture1.value = bufferTexture.texture;
+    //pass mmd skineed mesh data to computeShaderVelocity shader to calculate particle position
     positionVariable.material.uniforms.texture1.value = bufferTexture.texture;
 
+    //pass mmd skineed mesh data to particle shader to calculate final particle position
     particleUniforms2.texture1.value = bufferTexture.texture;
+
+
+
+    /* getCurrentRenderTarget function would pass the previous position to myself, then calculating next position using the previous position */
+    //pass calculated particle velocity to partticle shader
     particleUniforms2.texturePosition.value = gpuCompute.getCurrentRenderTarget( positionVariable ).texture;
+
+    //pass calculated particle position to partticle shader
     particleUniforms2.textureVelocity.value = gpuCompute.getCurrentRenderTarget( velocityVariable ).texture;
+
 
     // renderer.setMode( _gl.POINTS );
     renderer.render( scene, camera );
