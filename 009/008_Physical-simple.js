@@ -9,14 +9,15 @@ class Physical {
         this.location     = location;
         this.velocity     = {x:0,y:0,z:0};
         this.acceleration = {x:0,y:0,z:0};
+
         this.mass = mass;
         this.initAcc = {
             x: Math.random() * 0.0001 - 0.00005,
             y: -0.004*mass,
             z: Math.random() * 0.0001 - 0.00005,
         };
-
         this.life = Math.random()* LIFE_MAX;
+
     }
 
     test(){

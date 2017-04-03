@@ -16,7 +16,7 @@ function init() {
         antialias: true // default enabled
     });
 
-    renderer.setClearColor(0x303E3F, 1.0);
+    renderer.setClearColor(0x111111, 1.0);
     renderer.setSize(width, height);
     renderer.setPixelRatio(dpr);
 
@@ -25,7 +25,7 @@ function init() {
     // camera = new THREE.OrthographicCamera( 1 / - 2, 1 / 2, 1 / 2, 1 / - 2, 1, 1000 )
     // camera.position.set(0, 0, -1)
 
-    const camera = new THREE.PerspectiveCamera(55, width / height, 0.001, 1000);
+    const camera = new THREE.PerspectiveCamera(60, width / height, 1, 1000);
     camera.position.set(0, 1, -3);
     camera.lookAt(new THREE.Vector3());
 
