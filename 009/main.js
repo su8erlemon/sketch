@@ -13,8 +13,9 @@ const debugMMDVert = glsl.file('./shader/debugMMD.vert');
 const particleFragmentShader = glsl.file('./shader/particleFragmentShader.frag');
 const particleVertexShader = glsl.file('./shader/particleVertexShader.vert');
 
-const computeShaderPosition = glsl.file('./shader/computeShaderPosition.frag');
-const computeShaderVelocity = glsl.file('./shader/computeShaderVelocity.frag');
+const computeShaderPosition     = glsl.file('./shader/computeShaderPosition.frag');
+const computeShaderVelocity     = glsl.file('./shader/computeShaderVelocity.frag');
+const computeShaderAcceleration = glsl.file('./shader/computeShaderAcceleration.frag');
 
 
 var mesh;
@@ -22,7 +23,7 @@ var helper;
 var clock = new THREE.Clock();
 
 // Texture width for simulation (each texel is a debris particle)
-var WIDTH = 124;
+var WIDTH = 1024;
 
 var geometry;
 var PARTICLES = WIDTH * WIDTH;
@@ -30,15 +31,20 @@ var PARTICLES = WIDTH * WIDTH;
 var gpuCompute;
 var velocityVariable;
 var positionVariable;
+var accelerationVariable;
 
 var positionUniforms;
 var velocityUniforms;
+var accelerationUniforms;
 
 var particleUniforms;
 var particleUniforms2;
 
 var dtDance;
 
+
+var gridHelper = new THREE.PolarGridHelper( 1, 1 );
+scene.add( gridHelper );
 
 // Create a different scene to hold our buffer objects
 var bufferScene = new THREE.Scene();
@@ -62,9 +68,10 @@ animate();
 
 function init() {
 
-    camera.position.z = 2;
-    camera.position.x = -2;
-    camera.lookAt(new THREE.Vector3());
+    camera.position.z = 1.5;
+    camera.position.x = -1;
+    camera.position.y = 1.0;
+    camera.lookAt(new THREE.Vector3(0,0.4,0));
 
 
     initComputeRenderer();
@@ -78,20 +85,24 @@ function initComputeRenderer() {
 
     var dtPosition = gpuCompute.createTexture();
     var dtVelocity = gpuCompute.createTexture();
+    var dtAcceleration = gpuCompute.createTexture();
 
+    fillTextures( dtPosition, dtVelocity, dtAcceleration );
 
-    fillTextures( dtPosition, dtVelocity, dtDance );
+    velocityVariable     = gpuCompute.addVariable( "textureVelocity",     computeShaderVelocity,     dtVelocity     );
+    positionVariable     = gpuCompute.addVariable( "texturePosition",     computeShaderPosition,     dtPosition     );
+    accelerationVariable = gpuCompute.addVariable( "textureAcceleration", computeShaderAcceleration, dtAcceleration );
 
-    velocityVariable = gpuCompute.addVariable( "textureVelocity", computeShaderVelocity, dtVelocity );
-    positionVariable = gpuCompute.addVariable( "texturePosition", computeShaderPosition, dtPosition );
     // danceVariable    = gpuCompute.addVariable( "textureDance"   , computeShaderDance   , dtDance    );
 
-    gpuCompute.setVariableDependencies( velocityVariable, [ positionVariable, velocityVariable ] );
-    gpuCompute.setVariableDependencies( positionVariable, [ positionVariable, velocityVariable ] );
+    gpuCompute.setVariableDependencies( velocityVariable,     [ positionVariable, velocityVariable, accelerationVariable ] );
+    gpuCompute.setVariableDependencies( positionVariable,     [ positionVariable, velocityVariable, accelerationVariable ] );
+    gpuCompute.setVariableDependencies( accelerationVariable, [ positionVariable, velocityVariable, accelerationVariable ] );
     // gpuCompute.setVariableDependencies( danceVariable   , [ positionVariable, velocityVariable, danceVariable ] );
 
-    positionUniforms = positionVariable.material.uniforms;
-    velocityUniforms = velocityVariable.material.uniforms;
+    positionUniforms     = positionVariable.material.uniforms;
+    velocityUniforms     = velocityVariable.material.uniforms;
+    accelerationUniforms = accelerationVariable.material.uniforms;
     //danceUniforms    = danceVariable.material.uniforms;
 
     positionVariable.material.uniforms.time = {
@@ -102,10 +113,13 @@ function initComputeRenderer() {
         value:0
     };
 
-    positionVariable.material.uniforms.texture1 = { type: "t", value: null };
-    velocityVariable.material.uniforms.texture1 = { type: "t", value: null };
+    accelerationVariable.material.uniforms.time = {
+        value:0
+    };
 
-
+    positionVariable.material.uniforms.texture1     = { type: "t", value: null };
+    velocityVariable.material.uniforms.texture1     = { type: "t", value: null };
+    accelerationVariable.material.uniforms.texture1 = { type: "t", value: null };
 
     // danceVariable.material.uniforms.time = {
     //     value:0
@@ -145,9 +159,9 @@ function initProtoplanets() {
     var positions = new Float32Array( PARTICLES * 3 );
     console.log("aaaaa",positions.length);
 
-    var ww = 0.02;
-    var hh = 0.02;
-    var zz = 0.02;
+    var ww = 0.003;
+    var hh = 0.003;
+    var zz = 0.003;
 
     var BOX_ARRAY = [
         // Front face
@@ -211,10 +225,14 @@ function initProtoplanets() {
     var ccc = 0;
     for ( var i = 0; i < PARTICLES * 3; i+= 3 * 3 * 12 ) {
         // console.log( ++ccc );
+        randomSize = 0.1 + Math.random()*1.2;
+        randomSizeH = 0.1 + Math.random()*1.2;
+
         for( var k = 0; k < 3*3*12; k+=3 ){
-            positions[i + k + 0] = BOX_ARRAY[k+0]*ww;
-            positions[i + k + 1] = BOX_ARRAY[k+1]*hh;
-            positions[i + k + 2] = BOX_ARRAY[k+2]*zz;
+            positions[i + k + 0] = BOX_ARRAY[k+0]*ww*randomSize*randomSize*randomSize;
+            positions[i + k + 1] = BOX_ARRAY[k+1]*hh*randomSizeH*randomSize*randomSizeH;
+            positions[i + k + 2] = BOX_ARRAY[k+2]*zz*randomSizeH*randomSizeH*randomSizeH;
+            //positions[i + k + 2] = BOX_ARRAY[k+2]*zz*3.;//randomSizeH*randomSizeH*randomSizeH;
             // console.log(i,i + k)
         }
 
@@ -255,9 +273,9 @@ function initProtoplanets() {
 
     particleUniforms = {
         texture1: { type: "t", value: null },
-        texturePosition: { value: null },
-        textureVelocity: { value: null },
-        textureDance:    { value: null },
+        texturePosition:     { value: null },
+        textureVelocity:     { value: null },
+        textureAcceleration: { value: null },
         cameraConstant: { value: getCameraConstant( camera ) },
         invMatrix: { value: new THREE.Matrix4() },
     };
@@ -288,6 +306,7 @@ function initProtoplanets() {
     material.extensions.drawBuffers = true;
 
     var particles = new THREE.Mesh( geometry, material );
+    // var particles = new THREE.Line( geometry, material );
     particles.matrixAutoUpdate = false;
     particles.updateMatrix();
     scene.add( particles );
@@ -347,7 +366,8 @@ function initProtoplanets() {
         mmdMesh.material = shaderMaterials;
 
         mesh = mmdMesh;
-        mesh.position.y = -12;
+        mesh.scale.set(0.4,0.4,0.4);
+        // mesh.position.y = -12;
 
         //scene.add( mesh );
         bufferScene.add( mesh );
@@ -358,24 +378,24 @@ function initProtoplanets() {
 
 
         //debug ==================================================
-        uniforms2 = {
-            texture1: { type: "t", value: null }
-        };
-
-        var shaderMaterial = new THREE.ShaderMaterial({
-            uniforms:uniforms2,
-            fragmentShader: debugMMDFrag,
-            vertexShader:   debugMMDVert,
-            transparent: true,
-        });
-
-        // var mat22 = new THREE.MeshBasicMaterial( { color: 0xffaa00} );
-        // var mat33 = new THREE.MeshPhongMaterial( { color: 0xdddddd, specular: 0x009900, shininess: 30, shading: THREE.SmoothShading, });
-
-        var box1 = new THREE.Points(mmdMesh.geometry, shaderMaterial)
+        // uniforms2 = {
+        //     texture1: { type: "t", value: null }
+        // };
+        //
+        // var shaderMaterial = new THREE.ShaderMaterial({
+        //     uniforms:uniforms2,
+        //     fragmentShader: debugMMDFrag,
+        //     vertexShader:   debugMMDVert,
+        //     transparent: true,
+        // });
+        //
+        // // var mat22 = new THREE.MeshBasicMaterial( { color: 0xffaa00} );
+        // // var mat33 = new THREE.MeshPhongMaterial( { color: 0xdddddd, specular: 0x009900, shininess: 30, shading: THREE.SmoothShading, });
+        //
+        // // var box1 = new THREE.Points(mmdMesh.geometry, shaderMaterial)
         // var box1 = new THREE.Mesh(mmdMesh.geometry, shaderMaterial)
-        // var box1 = new THREE.Line(mmdMesh.geometry, shaderMaterial)
-        scene.add(box1);
+        // // var box1 = new THREE.Line(mmdMesh.geometry, shaderMaterial)
+        // scene.add(box1);
         //debug ==================================================
 
 
@@ -400,10 +420,11 @@ function initProtoplanets() {
 
 }
 
-function fillTextures( texturePosition, textureVelocity ) {
+function fillTextures( texturePosition, textureVelocity, textureAcceleration ) {
 
     var posArray   = texturePosition.image.data;
     var velArray   = textureVelocity.image.data;
+    var accArray   = textureAcceleration.image.data;
 
     console.log("pos",posArray.length)
     console.log("vel",velArray.length)
@@ -415,8 +436,8 @@ function fillTextures( texturePosition, textureVelocity ) {
         // Position
         var x, y, z;
         var posrX = Math.random() - .5;
-        var posrY = Math.random() - .5;
-        var posrZ = Math.random() * -4;
+        var posrY = Math.random() + 0.3;// - .5;
+        var posrZ = Math.random() - 0.5;
         var w = Math.random()*12200;
 
         // posArrayの実態は一次元配列なので
@@ -433,7 +454,7 @@ function fillTextures( texturePosition, textureVelocity ) {
         // これでランダムな方向にとぶパーティクルが出来上がるはず。
         var velX = 0;
         var velY = 0;
-        var velZ = -0.1;
+        var velZ = 0;
 
         w = Math.random();
 
@@ -443,6 +464,19 @@ function fillTextures( texturePosition, textureVelocity ) {
             velArray[ k + k2+2 ] = velZ;
             velArray[ k + k2+3 ] = w;
         }
+
+
+        var accX = Math.random() * 0.0001 - 0.00005;
+        var accY = -0.001;//-0.0001 - Math.random()*0.001;
+        var accZ = Math.random() * 0.0001 - 0.00005 - 0.0005;
+
+        for( var k2 = 0; k2 < 4*3*12; k2 += 4 ){
+            accArray[ k + k2+0 ] = accX;
+            accArray[ k + k2+1 ] = accY;
+            accArray[ k + k2+2 ] = accZ;
+            accArray[ k + k2+3 ] = 0.0;
+        }
+
     }
 
     // for ( var k = 0, kl = posArray.length; k < kl; k += 4*3 ) {
@@ -522,13 +556,16 @@ function render() {
 
     gpuCompute.compute();
 
-    velocityVariable.material.uniforms.time.value += 1/60;
-    positionVariable.material.uniforms.time.value += 1/60;
+    velocityVariable.material.uniforms.time.value     += 1/60;
+    positionVariable.material.uniforms.time.value     += 1/60;
+    accelerationVariable.material.uniforms.time.value += 1/60;
 
     //pass mmd skineed mesh data to computeShaderVelocity shader to calculate particle velocity
     velocityVariable.material.uniforms.texture1.value = bufferTexture.texture;
     //pass mmd skineed mesh data to computeShaderVelocity shader to calculate particle position
     positionVariable.material.uniforms.texture1.value = bufferTexture.texture;
+
+    accelerationVariable.material.uniforms.texture1.value = bufferTexture.texture;
 
     //pass mmd skineed mesh data to particle shader to calculate final particle position
     particleUniforms2.texture1.value = bufferTexture.texture;
@@ -541,6 +578,8 @@ function render() {
 
     //pass calculated particle position to partticle shader
     particleUniforms2.textureVelocity.value = gpuCompute.getCurrentRenderTarget( velocityVariable ).texture;
+
+    particleUniforms2.textureAcceleration.value = gpuCompute.getCurrentRenderTarget( accelerationVariable ).texture;
 
 
     // renderer.setMode( _gl.POINTS );
