@@ -15,6 +15,9 @@ const debugMMDVert = glsl.file('./shader/debugMMD.vert');
 const particleFragmentShader = glsl.file('./shader/particleFragmentShader.frag');
 const particleVertexShader = glsl.file('./shader/particleVertexShader.vert');
 
+const bodyFragmentShader = glsl.file('./shader/bodyFragmentShader.frag');
+const bodyVertexShader = glsl.file('./shader/bodyVertexShader.vert');
+
 const computeShaderPosition     = glsl.file('./shader/computeShaderPosition.frag');
 const computeShaderVelocity     = glsl.file('./shader/computeShaderVelocity.frag');
 const computeShaderAcceleration = glsl.file('./shader/computeShaderAcceleration.frag');
@@ -30,7 +33,7 @@ var helper;
 var clock = new THREE.Clock();
 
 // Texture width for simulation (each texel is a debris particle)
-var WIDTH = 36*30;
+var WIDTH = 36*10;
 
 var geometry;
 var PARTICLES = WIDTH * WIDTH;
@@ -45,7 +48,7 @@ var velocityUniforms;
 var accelerationUniforms;
 
 var particleUniforms;
-var particleUniforms2;
+var bodyUniforms;
 
 var dtDance;
 
@@ -72,7 +75,6 @@ var bufferTexture2 = new THREE.WebGLRenderTarget(
         magFilter: THREE.NearestFilter
     }
 );
-var bufferTexture2;
 var uniforms2;
 
 
@@ -164,32 +166,19 @@ function initProtoplanets() {
     // planeObject2.position.y = 1.0;
     // scene.add(planeObject2);
 
-    geometry = new THREE.BufferGeometry();
 
-    // var positions = new Float32Array( PARTICLES * 3 );
-    //
-    // var dr = 0.0;
-    // for ( var i = 0; i < PARTICLES * 3; i+= 3 * 3 ) {
-    //     positions[ i+0 ] = Math.random() * dr;
-    //     positions[ i+1 ] = Math.random() * dr;
-    //     positions[ i+2 ] = Math.random() * dr;
-    //
-    //     positions[ i+3 ] = Math.random() * dr;
-    //     positions[ i+4 ] = Math.random() * dr;
-    //     positions[ i+5 ] = Math.random() * dr;
-    //
-    //     positions[ i+6 ] = Math.random() * dr;
-    //     positions[ i+7 ] = Math.random() * dr;
-    //     positions[ i+8 ] = Math.random() * dr;
-    // }
-    //
-    // var indexs2 = new Float32Array( PARTICLES );
-    // for ( var i = 0; i < PARTICLES ; i++ ) {
-    //     indexs2[i] = i;
-    // }
 
-    var positions = new Float32Array( PARTICLES * 3 );
-    console.log("aaaaa",positions.length);
+    // Create light
+    var light = new THREE.PointLight(0xffffff, 1.0);
+    light.position.set(1,1,1);
+    scene.add(light);
+
+
+
+    // make particle
+
+    var particleGeometry = new THREE.BufferGeometry();
+    var particlePositions = new Float32Array( PARTICLES * 3 );
 
     var ww = 0.001;
     var hh = 0.001;
@@ -261,71 +250,49 @@ function initProtoplanets() {
         randomSizeH = 0.1 + Math.random()*2.0;
 
         for( var k = 0; k < 3*3*12; k+=3 ){
-            positions[i + k + 0] = BOX_ARRAY[k+0]*ww*randomSize*randomSize*randomSize;
-            positions[i + k + 1] = BOX_ARRAY[k+1]*hh*randomSizeH*randomSize*randomSizeH;
-            positions[i + k + 2] = BOX_ARRAY[k+2]*zz*randomSizeH*randomSizeH*randomSizeH;
+            particlePositions[i + k + 0] = BOX_ARRAY[k+0]*ww*randomSize*randomSize*randomSize;
+            particlePositions[i + k + 1] = BOX_ARRAY[k+1]*hh*randomSizeH*randomSize*randomSizeH;
+            particlePositions[i + k + 2] = BOX_ARRAY[k+2]*zz*randomSizeH*randomSizeH*randomSizeH;
             //positions[i + k + 2] = BOX_ARRAY[k+2]*zz*3.;//randomSizeH*randomSizeH*randomSizeH;
             // console.log(i,i + k)
         }
 
-        //left x
-        // positions[ i+0 ] = 0.0;//Math.random() * 1;
-        // positions[ i+1 ] = -0.1;//Math.random() * 1;
-        // positions[ i+2 ] = 0.0;//Math.random() * 1;
-        //
-        // positions[ i+3 ] = 0.0;//Math.random() * 1;
-        // positions[ i+4 ] = 0.1;//Math.random() * 1;
-        // positions[ i+5 ] = 0.0;//Math.random() * 1;
-        //
-        // positions[ i+6 ] = 2.0;//Math.random() * 1;
-        // positions[ i+7 ] = 0.0;//Math.random() * 1;
-        // positions[ i+8 ] = 0.0;//Math.random() * 1;
-
-
     }
 
 
-    var uvs = new Float32Array( PARTICLES * 2 );
+    var particleUVs = new Float32Array( PARTICLES * 2 );
     var p = 0;
     for ( var j = 0; j < WIDTH; j++ ) {
         for ( var i = 0; i < WIDTH; i++ ) {
-            uvs[ p++ ] = i / ( WIDTH - 1 );
-            uvs[ p++ ] = j / ( WIDTH - 1 );
+            particleUVs[ p++ ] = i / ( WIDTH - 1 );
+            particleUVs[ p++ ] = j / ( WIDTH - 1 );
         }
     }
 
-    var indexs2 = new Float32Array( PARTICLES );
+    var particleIndexs = new Float32Array( PARTICLES );
     for ( var i = 0; i < PARTICLES ; i++ ) {
-        indexs2[i] = i;
+        particleIndexs[i] = i;
     }
 
-    geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
-    geometry.addAttribute( 'uv', new THREE.BufferAttribute( uvs, 2 ) );
-    geometry.addAttribute( 'index2', new THREE.BufferAttribute( indexs2, 1 ) );
+    particleGeometry.addAttribute( 'position', new THREE.BufferAttribute( particlePositions, 3 ) );
+    particleGeometry.addAttribute( 'uv',       new THREE.BufferAttribute( particleUVs, 2 ) );
+    particleGeometry.addAttribute( 'index2',   new THREE.BufferAttribute( particleIndexs, 1 ) );
 
-    particleUniforms = {
-        texture1: { type: "t", value: null },
-        texturePosition:     { value: null },
-        textureVelocity:     { value: null },
-        textureAcceleration: { value: null },
-        cameraConstant: { value: getCameraConstant( camera ) },
-        invMatrix: { value: new THREE.Matrix4() },
-    };
-
-    // Create light
-    var light = new THREE.PointLight(0xffffff, 1.0);
-    // We want it to be very close to our character
-    light.position.set(1,1,1);
-    scene.add(light);
-
-    particleUniforms2 = THREE.UniformsUtils.merge([
+    particleUniforms = THREE.UniformsUtils.merge([
         THREE.UniformsLib['lights'],
-        particleUniforms,
+        {
+            texture1: { type: "t", value: null },
+            texturePosition:     { value: null },
+            textureVelocity:     { value: null },
+            textureAcceleration: { value: null },
+            cameraConstant: { value: getCameraConstant( camera ) },
+            invMatrix: { value: new THREE.Matrix4() },
+        },
     ]);
 
     // // ShaderMaterial
-    var material = new THREE.ShaderMaterial( {
-        uniforms:       particleUniforms2,
+    var particleMaterial = new THREE.ShaderMaterial( {
+        uniforms:       particleUniforms,
         vertexShader:   particleVertexShader,
         fragmentShader: particleFragmentShader,
         side:           THREE.DoubleSide,
@@ -334,11 +301,11 @@ function initProtoplanets() {
         lights: true,
     } );
 
-    material.extensions.derivatives = true;
-    material.extensions.drawBuffers = true;
+    particleMaterial.extensions.derivatives = true;
+    particleMaterial.extensions.drawBuffers = true;
 
-    var particles = new THREE.Mesh( geometry, material );
-    // var particles = new THREE.Line( geometry, material );
+    var particles = new THREE.Mesh( particleGeometry, particleMaterial );
+    // var particles = new THREE.Line( particleGeometry, particleMaterial );
     particles.matrixAutoUpdate = false;
     particles.updateMatrix();
     scene.add( particles );
@@ -347,7 +314,178 @@ function initProtoplanets() {
     m.copy( particles.matrixWorld );
     m.multiply( camera.matrixWorldInverse );
     var i = new THREE.Matrix4().getInverse( m );
-    material.uniforms.invMatrix.value = i;
+    particleMaterial.uniforms.invMatrix.value = i;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // make particle
+    const BODY_NUM = 36*2000;
+    var bodyGeometry = new THREE.BufferGeometry();
+    var bodyPositions = new Float32Array( BODY_NUM * 3 );
+
+    var ww = 0.005;
+    var hh = 0.01;
+    var zz = 0.005;
+
+    var BOX_ARRAY = [
+        // Front face
+        -1.0, -1.0,  1.0,
+        1.0, -1.0,  1.0,
+        1.0,  1.0,  1.0,
+
+        -1.0, -1.0,  1.0,
+        1.0,  1.0,  1.0,
+        -1.0,  1.0,  1.0,
+
+        // Back face
+        -1.0, -1.0,  -1.0,
+        1.0, -1.0,  -1.0,
+        1.0,  1.0,  -1.0,
+
+        -1.0, -1.0,  -1.0,
+        1.0,  1.0,  -1.0,
+        -1.0,  1.0,  -1.0,
+
+        // Top face
+        -1.0,  1.0, -1.0,
+        -1.0,  1.0,  1.0,
+        1.0,  1.0,  1.0,
+
+        -1.0,  1.0, -1.0,
+        1.0,  1.0,  1.0,
+        1.0,  1.0, -1.0,
+
+        // Bottom face
+        -1.0,  -1.0, -1.0,
+        -1.0,  -1.0,  1.0,
+        1.0,  -1.0,  1.0,
+
+        -1.0,  -1.0, -1.0,
+        1.0,  -1.0,  1.0,
+        1.0,  -1.0, -1.0,
+
+
+        // Right face
+        1.0, -1.0, -1.0,
+        1.0,  1.0, -1.0,
+        1.0,  1.0,  1.0,
+
+        1.0, -1.0, -1.0,
+        1.0,  1.0,  1.0,
+        1.0, -1.0,  1.0,
+
+        // Left face
+        -1.0, -1.0, -1.0,
+        -1.0,  1.0, -1.0,
+        -1.0,  1.0,  1.0,
+
+        -1.0, -1.0, -1.0,
+        -1.0,  1.0,  1.0,
+        -1.0, -1.0,  1.0,
+    ];
+
+    var randomSize;
+    var randomSizeH;
+    for ( var i = 0; i < BODY_NUM * 3; i+= 3 * 3 * 12 ) {
+        randomSize = (Math.random()+Math.random()+Math.random()+Math.random()+Math.random())/5.0;
+        randomSizeH = 1.0 + Math.random()*2.0;
+        for( var k = 0; k < 3*3*12; k+=3 ){
+            bodyPositions[i + k + 0] = BOX_ARRAY[k+0]*ww*randomSizeH*1.0;
+            bodyPositions[i + k + 1] = BOX_ARRAY[k+1]*hh*(randomSizeH/2.0);
+            bodyPositions[i + k + 2] = BOX_ARRAY[k+2]*zz*randomSize*4.0;
+        }
+    }
+
+    var bodyUVs = new Float32Array( BODY_NUM * 2 );
+    var p = 0;
+    for ( var j = 0; j < WIDTH; j++ ) {
+        for ( var i = 0; i < WIDTH; i++ ) {
+            bodyUVs[ p++ ] = i / ( WIDTH - 1 );
+            bodyUVs[ p++ ] = j / ( WIDTH - 1 );
+        }
+    }
+
+    var bodyIndex = new Float32Array( BODY_NUM );
+    for ( var i = 0; i < BODY_NUM ; i++ ) {
+        bodyIndex[i] = i;
+    }
+
+    bodyGeometry.addAttribute( 'position', new THREE.BufferAttribute( bodyPositions, 3 ) );
+    bodyGeometry.addAttribute( 'uv', new THREE.BufferAttribute( bodyUVs, 2 ) );
+    bodyGeometry.addAttribute( 'bodyIndex', new THREE.BufferAttribute( bodyIndex, 1 ) );
+
+
+    bodyUniforms = THREE.UniformsUtils.merge([
+        THREE.UniformsLib['lights'],
+        {
+            texture1: { type: "t", value: null },
+            texturePosition:     { value: null },
+            textureVelocity:     { value: null },
+            textureAcceleration: { value: null },
+            cameraConstant: { value: getCameraConstant( camera ) },
+            invMatrix: { value: new THREE.Matrix4() },
+        }
+    ]);
+
+    // // ShaderMaterial
+    var bodyMaterial = new THREE.ShaderMaterial( {
+        uniforms:       bodyUniforms,
+        vertexShader:   bodyVertexShader,
+        fragmentShader: bodyFragmentShader,
+        side:           THREE.DoubleSide,
+        vertexColors: THREE.VertexColors,
+        transparent: true,
+        lights: true,
+    });
+
+    bodyMaterial.extensions.derivatives = true;
+    bodyMaterial.extensions.drawBuffers = true;
+
+    var bodyMarticles = new THREE.Mesh( bodyGeometry, bodyMaterial );
+    bodyMarticles.matrixAutoUpdate = false;
+    bodyMarticles.updateMatrix();
+    scene.add( bodyMarticles );
+
+    var m = new THREE.Matrix4();
+    m.copy( bodyMarticles.matrixWorld );
+    m.multiply( camera.matrixWorldInverse );
+    var i = new THREE.Matrix4().getInverse( m );
+    bodyMaterial.uniforms.invMatrix.value = i;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -367,7 +505,7 @@ function initProtoplanets() {
     var onError = function ( xhr ) {
     };
 
-    var modelFile = 'models/mmd/miku/miku_v2.pmd';
+    var modelFile = 'models/mmd/miku/kyozai.pmx';
     var vmdFiles = [ 'models/mmd/vmds/wavefile_v2.vmd' ];
 
     helper = new THREE.MMDHelper();
@@ -375,7 +513,7 @@ function initProtoplanets() {
     var loader = new THREE.MMDLoader();
     loader.load( modelFile, vmdFiles, function ( mmdMesh ) {
 
-        console.log(mmdMesh)
+        // console.log(mmdMesh)
 
         var indexs = new Float32Array( mmdMesh.geometry.attributes.position.count );
         for ( var i = 0; i < mmdMesh.geometry.attributes.position.count; i++ ) {
@@ -470,7 +608,7 @@ function fillTextures( texturePosition, textureVelocity, textureAcceleration ) {
         var posrX = Math.random() - .5;
         var posrY = Math.random() + 0.3;// - .5;
         var posrZ = Math.random() - 0.5;
-        var w = Math.random()*12200;
+        var w = Math.random()*23000;
 
         // posArrayの実態は一次元配列なので
         // x,y,z,wの順番に埋めていく。
@@ -511,56 +649,6 @@ function fillTextures( texturePosition, textureVelocity, textureAcceleration ) {
 
     }
 
-    // for ( var k = 0, kl = posArray.length; k < kl; k += 4*3 ) {
-    //     // Position
-    //     var x, y, z;
-    //     var posrX = Math.random()* 6.- 3.;
-    //     var posrY = Math.random()* 6.- 3.;
-    //     var posrZ = Math.random()* 6.- 3.;
-    //     var w = Math.random()*10.0;
-    //
-    //     // posArrayの実態は一次元配列なので
-    //     // x,y,z,wの順番に埋めていく。
-    //     // wは今回は使用しないが、配列の順番などを埋めておくといろいろ使えて便利
-    //     posArray[ k + 0 ] = posrX;
-    //     posArray[ k + 1 ] = posrY;
-    //     posArray[ k + 2 ] = posrZ;
-    //     posArray[ k + 3 ] = w;
-    //
-    //     posArray[ k + 4 ] = posrX;
-    //     posArray[ k + 5 ] = posrY;
-    //     posArray[ k + 6 ] = posrZ;
-    //     posArray[ k + 7 ] = w;
-    //
-    //     posArray[ k + 8 ] = posrX;
-    //     posArray[ k + 9 ] = posrY;
-    //     posArray[ k + 10 ] = posrZ;
-    //     posArray[ k + 11 ] = w;
-    //
-    //     // 移動する方向はとりあえずランダムに決めてみる。
-    //     // これでランダムな方向にとぶパーティクルが出来上がるはず。
-    //     var velX = Math.random() - 0.5;
-    //     var velY = Math.random() - 0.5;
-    //     var velZ = Math.random() - 0.5;
-    //
-    //     w = 0.5+Math.random()*0.5;
-    //
-    //     velArray[ k + 0 ] = velX;
-    //     velArray[ k + 1 ] = velY;
-    //     velArray[ k + 2 ] = velZ;
-    //     velArray[ k + 3 ] = w;
-    //
-    //     velArray[ k + 4 ] = velX;
-    //     velArray[ k + 5 ] = velY;
-    //     velArray[ k + 6 ] = velZ;
-    //     velArray[ k + 7 ] = w;
-    //
-    //     velArray[ k + 8 ] = velX;
-    //     velArray[ k + 9 ] = velY;
-    //     velArray[ k + 10 ] = velZ;
-    //     velArray[ k + 11 ] = w;
-    //
-    // }
 
 }
 
@@ -604,18 +692,26 @@ function render() {
     accelerationVariable.material.uniforms.texture2.value = bufferTexture2.texture;
 
     //pass mmd skineed mesh data to particle shader to calculate final particle position
-    particleUniforms2.texture1.value = bufferTexture.texture;
+    particleUniforms.texture1.value = bufferTexture.texture;
+    bodyUniforms.texture1.value = bufferTexture.texture;
 
 
 
     /* getCurrentRenderTarget function would pass the previous position to myself, then calculating next position using the previous position */
     //pass calculated particle velocity to partticle shader
-    particleUniforms2.texturePosition.value = gpuCompute.getCurrentRenderTarget( positionVariable ).texture;
+    particleUniforms.texturePosition.value = gpuCompute.getCurrentRenderTarget( positionVariable ).texture;
 
     //pass calculated particle position to partticle shader
-    particleUniforms2.textureVelocity.value = gpuCompute.getCurrentRenderTarget( velocityVariable ).texture;
+    particleUniforms.textureVelocity.value = gpuCompute.getCurrentRenderTarget( velocityVariable ).texture;
 
-    particleUniforms2.textureAcceleration.value = gpuCompute.getCurrentRenderTarget( accelerationVariable ).texture;
+    particleUniforms.textureAcceleration.value = gpuCompute.getCurrentRenderTarget( accelerationVariable ).texture;
+
+
+    bodyUniforms.texturePosition.value = gpuCompute.getCurrentRenderTarget( positionVariable ).texture;
+    bodyUniforms.textureVelocity.value = gpuCompute.getCurrentRenderTarget( velocityVariable ).texture;
+    bodyUniforms.textureAcceleration.value = gpuCompute.getCurrentRenderTarget( accelerationVariable ).texture;
+
+
 
 
     // renderer.setMode( _gl.POINTS );

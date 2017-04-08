@@ -9,7 +9,7 @@ function init() {
     height = window.innerHeight;
 
     // Scale for retina
-    const dpr = 1.0;//Math.min(1.5, window.devicePixelRatio);
+    const dpr = 0.5;//Math.min(1.5, window.devicePixelRatio);
 
     const renderer = new THREE.WebGLRenderer({
         canvas: document.getElementById("canvas"),
