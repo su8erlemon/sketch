@@ -1,4 +1,6 @@
+
 const threeApp = require('./lib/createThree');
+
 const { camera, scene, renderer, controls } = threeApp();
 
 const glsl = require('glslify');
@@ -18,12 +20,17 @@ const computeShaderVelocity     = glsl.file('./shader/computeShaderVelocity.frag
 const computeShaderAcceleration = glsl.file('./shader/computeShaderAcceleration.frag');
 
 
+//for debug
+window.scene = scene;
+window.THREE = THREE;
+
+
 var mesh;
 var helper;
 var clock = new THREE.Clock();
 
 // Texture width for simulation (each texel is a debris particle)
-var WIDTH = 1024;
+var WIDTH = 36*30;
 
 var geometry;
 var PARTICLES = WIDTH * WIDTH;
@@ -57,6 +64,15 @@ var bufferTexture = new THREE.WebGLRenderTarget(
         magFilter: THREE.NearestFilter
     }
 );
+var bufferTexture2 = new THREE.WebGLRenderTarget(
+    128,
+    128,
+    {
+        minFilter: THREE.LinearFilter,
+        magFilter: THREE.NearestFilter
+    }
+);
+var bufferTexture2;
 var uniforms2;
 
 
@@ -120,6 +136,7 @@ function initComputeRenderer() {
     positionVariable.material.uniforms.texture1     = { type: "t", value: null };
     velocityVariable.material.uniforms.texture1     = { type: "t", value: null };
     accelerationVariable.material.uniforms.texture1 = { type: "t", value: null };
+    accelerationVariable.material.uniforms.texture2 = { type: "t", value: null };
 
     // danceVariable.material.uniforms.time = {
     //     value:0
@@ -131,6 +148,21 @@ function initComputeRenderer() {
 
 
 function initProtoplanets() {
+
+
+    // var debugMaterial = new THREE.MeshBasicMaterial({map:bufferTexture.texture});
+    // var plane1 = new THREE.PlaneBufferGeometry( 1,1);
+    // var planeObject1 = new THREE.Mesh(plane1,debugMaterial);
+    // planeObject1.position.x = 1.5;
+    // planeObject1.position.y = 1.0;
+    // scene.add(planeObject1);
+    //
+    // var debugMaterial2 = new THREE.MeshBasicMaterial({map:bufferTexture2.texture});
+    // var plane2 = new THREE.PlaneBufferGeometry( 1,1);
+    // var planeObject2 = new THREE.Mesh(plane2,debugMaterial2);
+    // planeObject2.position.x = 2.9;
+    // planeObject2.position.y = 1.0;
+    // scene.add(planeObject2);
 
     geometry = new THREE.BufferGeometry();
 
@@ -159,9 +191,9 @@ function initProtoplanets() {
     var positions = new Float32Array( PARTICLES * 3 );
     console.log("aaaaa",positions.length);
 
-    var ww = 0.003;
-    var hh = 0.003;
-    var zz = 0.003;
+    var ww = 0.001;
+    var hh = 0.001;
+    var zz = 0.001;
 
     var BOX_ARRAY = [
         // Front face
@@ -225,8 +257,8 @@ function initProtoplanets() {
     var ccc = 0;
     for ( var i = 0; i < PARTICLES * 3; i+= 3 * 3 * 12 ) {
         // console.log( ++ccc );
-        randomSize = 0.1 + Math.random()*1.2;
-        randomSizeH = 0.1 + Math.random()*1.2;
+        randomSize = 0.1 + Math.random()*2.0;
+        randomSizeH = 0.1 + Math.random()*2.0;
 
         for( var k = 0; k < 3*3*12; k+=3 ){
             positions[i + k + 0] = BOX_ARRAY[k+0]*ww*randomSize*randomSize*randomSize;
@@ -392,8 +424,8 @@ function initProtoplanets() {
         // // var mat22 = new THREE.MeshBasicMaterial( { color: 0xffaa00} );
         // // var mat33 = new THREE.MeshPhongMaterial( { color: 0xdddddd, specular: 0x009900, shininess: 30, shading: THREE.SmoothShading, });
         //
-        // // var box1 = new THREE.Points(mmdMesh.geometry, shaderMaterial)
-        // var box1 = new THREE.Mesh(mmdMesh.geometry, shaderMaterial)
+        // var box1 = new THREE.Points(mmdMesh.geometry, shaderMaterial)
+        // // var box1 = new THREE.Mesh(mmdMesh.geometry, shaderMaterial)
         // // var box1 = new THREE.Line(mmdMesh.geometry, shaderMaterial)
         // scene.add(box1);
         //debug ==================================================
@@ -545,6 +577,9 @@ function render() {
 
     helper.animate( clock.getDelta() );
 
+
+
+
     // Render onto our off-screen texture
     // draw mmd skinned mesh data to bufferTexture
     renderer.render(bufferScene, camera, bufferTexture);
@@ -566,6 +601,7 @@ function render() {
     positionVariable.material.uniforms.texture1.value = bufferTexture.texture;
 
     accelerationVariable.material.uniforms.texture1.value = bufferTexture.texture;
+    accelerationVariable.material.uniforms.texture2.value = bufferTexture2.texture;
 
     //pass mmd skineed mesh data to particle shader to calculate final particle position
     particleUniforms2.texture1.value = bufferTexture.texture;
@@ -585,4 +621,6 @@ function render() {
     // renderer.setMode( _gl.POINTS );
     renderer.render( scene, camera );
 
+
+    renderer.render(bufferScene, camera, bufferTexture2);
 }

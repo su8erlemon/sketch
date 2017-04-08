@@ -43,26 +43,26 @@ void main() {
 
     // rotatoin
 //    velTemp = posTemp;
-    velTemp.z *= -1.;
-    float xz = length( velTemp.xz );
-    float xyz = 1.;
-    float x = sqrt( 1. - velTemp.y * velTemp.y );
-    float cosry = velTemp.x / xz;
-    float sinry = velTemp.z / xz;
-    float cosrz = x / xyz;
-    float sinrz = velTemp.y / xyz;
-    mat3 maty =  mat3(
-      cosry, 0, -sinry,
-      0    , 1, 0     ,
-      sinry, 0, cosry
-    );
-    mat3 matz =  mat3(
-      cosrz , sinrz, 0,
-      -sinrz, cosrz, 0,
-      0     , 0    , 1
-    );
-
-    newPosition = maty * matz * newPosition;
+//    velTemp.z *= -1.;
+//    float xz = length( velTemp.xz );
+//    float xyz = 1.;
+//    float x = sqrt( 1. - velTemp.y * velTemp.y );
+//    float cosry = velTemp.x / xz;
+//    float sinry = velTemp.z / xz;
+//    float cosrz = x / xyz;
+//    float sinrz = velTemp.y / xyz;
+//    mat3 maty =  mat3(
+//      cosry, 0, -sinry,
+//      0    , 1, 0     ,
+//      sinry, 0, cosry
+//    );
+//    mat3 matz =  mat3(
+//      cosrz , sinrz, 0,
+//      -sinrz, cosrz, 0,
+//      0     , 0    , 1
+//    );
+//
+//    newPosition = maty * matz * newPosition;
 
 
     newPosition += pos;
@@ -87,9 +87,10 @@ void main() {
     vPosition = newPosition;
 
     //vColor = vec4( 1.0, 1.0, 1.0 - accTemp.w * 0.03 , 1.0 );
-    float per = accTemp.w * 0.02;
+    float per = accTemp.w * 0.03;
     vColor = vec4( 247.0/255.0, 40.0/255.0, 92.0/255.0, 1.0 ) * (1.0-per) +
-                 vec4( 52.0/255.0, 38.0/255.0, 91.0/255.0, 1.0 ) * (per);
+//                 vec4( 52.0/255.0, 38.0/255.0, 91.0/255.0, 1.0 ) * (per);
+                vec4( 255.0/255.0, 255.0/255.0, 255.0/255.0, 1.0 ) * (per);
 
 
 }

@@ -4,8 +4,14 @@
 uniform float time;
 
 uniform sampler2D texture1;
+uniform sampler2D texture2;
+
 const float frag = 1.0 / 128.0;
 const float texShift = 0.5 * frag;
+
+float rand1(vec2 co){
+    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
 
 void main() {
 
@@ -21,12 +27,19 @@ void main() {
     float pu = fract(index * frag + texShift);
     float pv = floor(index * frag) * frag + texShift;
     vec3 tmpDan = texture2D( texture1, vec2(pu, pv)).rgb * 2.0 - 1.0;
+    vec3 tmpDan2 = texture2D( texture2, vec2(pu, pv)).rgb * 2.0 - 1.0;
 
 //    vec3 acc = ((tmpPos.xyz - tmpVel.xyz) - tmpDan) * 0.001;
-    vec3 acc = vec3(tmpAcc.xyz);
+//    vec3 acc = vec3(tmpAcc.xyz);
 //    vec3 acc = vec3( 0.0000, -0.001, -0.001);
 //    vec3 acc = vec3( 0.0, 0.0, 0.0);
 //    vec3 acc = (-tmpDan - (tmpPos.xyz + tmpVel.xyz)) * 0.01;
+
+//    vec3 acc = (tmpDan-tmpDan2 )*0.08 + vec3( 0.0000, -0.001, 0.000);
+
+
+    vec3 acc = tmpAcc.xyz;
+    (tmpVel.w>10.)?(acc = (tmpDan-tmpDan2 )*0.015 + vec3( 0.0000, -0.001-rand1(tmpDan.xz)*0.0005, -0.00)):vec3(0.0);
 
 
 
