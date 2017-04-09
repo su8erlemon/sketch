@@ -2331,7 +2331,7 @@ THREE.MMDHelper.prototype = {
 
 				var action = mesh.mixer.clipAction( clip );
 
-				if ( clip.tracks[ 0 ].name.indexOf( '.morphTargetInfluences' ) === 0 ) {
+				if ( clip.tracks[ 0 ] && clip.tracks[ 0 ].name.indexOf( '.morphTargetInfluences' ) === 0 ) {
 
 					if ( ! foundMorphAnimation ) {
 

@@ -5,6 +5,17 @@ const { camera, scene, renderer, controls } = threeApp();
 
 const glsl = require('glslify');
 
+import {SoundCloud} from './lib/SoundCloud.js';
+const soundCloud = new SoundCloud();
+soundCloud.init("https://soundcloud.com/floatingpoints/for-marmish-part-ii",
+    (menuElement, debugCanvas) => {
+        document.body.appendChild( menuElement );
+        document.body.appendChild( debugCanvas );
+
+        soundCloud.play();
+        window.soundCloud = soundCloud;
+    }
+);
 
 const mmdSaveToTextureFrag = glsl.file('./shader/mmdSaveToTexture.frag');
 const mmdSaveToTextureVert = glsl.file('./shader/mmdSaveToTexture.vert');
@@ -86,10 +97,14 @@ animate();
 
 function init() {
 
-    camera.position.z = 1.5;
-    camera.position.x = -1;
-    camera.position.y = 1.0;
-    camera.lookAt(new THREE.Vector3(0,0.4,0));
+    // camera.position.z = 1.5;
+    // camera.position.x = -1;
+    // camera.position.y = 1.0;
+    // camera.lookAt(new THREE.Vector3(0,0.4,0));
+    camera.position.z = 1.0;
+    camera.position.x = .0;
+    camera.position.y = 0.3;
+    camera.lookAt(new THREE.Vector3(0,0.3,0));
 
 
     initComputeRenderer();
@@ -170,8 +185,14 @@ function initProtoplanets() {
 
     // Create light
     var light = new THREE.PointLight(0xffffff, 1.0);
-    light.position.set(1,1,1);
+    // light.position.set(1,1,1);
+    light.position.set(camera.position);
     scene.add(light);
+
+    var light2 = new THREE.DirectionalLight( 0xFFFFFF );
+    // var helper = new THREE.DirectionalLightHelper( light2, 5 );
+    scene.add( light2 );
+
 
 
 
@@ -180,71 +201,87 @@ function initProtoplanets() {
     var particleGeometry = new THREE.BufferGeometry();
     var particlePositions = new Float32Array( PARTICLES * 3 );
 
-    var ww = 0.001;
-    var hh = 0.001;
-    var zz = 0.001;
+    var ww = 0.003;
+    var hh = 0.003;
+    var zz = 0.003;
 
     var BOX_ARRAY = [
-        // Front face
-        -1.0, -1.0,  1.0,
-        1.0, -1.0,  1.0,
-        1.0,  1.0,  1.0,
+        0.0, -1.0,-1.0,
+        0.0, 1.0, 0.0,
+        0.866025, -1.0, 0.5,
 
-        -1.0, -1.0,  1.0,
-        1.0,  1.0,  1.0,
-        -1.0,  1.0,  1.0,
+        0.866025, -1.0, 0.5,
+        0.0, 1.0, 0.0,
+        -0.866025, -1.0, 0.5,
 
-        // Back face
-        -1.0, -1.0,  -1.0,
-        1.0, -1.0,  -1.0,
-        1.0,  1.0,  -1.0,
+        -0.866025, -1.0, 0.5,
+        0.0, 1.0, 0.0,
+        0.0, -1.0,-1.0,
 
-        -1.0, -1.0,  -1.0,
-        1.0,  1.0,  -1.0,
-        -1.0,  1.0,  -1.0,
+        0.0, -1.0,-1.0,
+        0.866025, -1.0, 0.5,
+        -0.866025, -1.0, 0.5,
 
-        // Top face
-        -1.0,  1.0, -1.0,
-        -1.0,  1.0,  1.0,
-        1.0,  1.0,  1.0,
-
-        -1.0,  1.0, -1.0,
-        1.0,  1.0,  1.0,
-        1.0,  1.0, -1.0,
-
-        // Bottom face
-        -1.0,  -1.0, -1.0,
-        -1.0,  -1.0,  1.0,
-        1.0,  -1.0,  1.0,
-
-        -1.0,  -1.0, -1.0,
-        1.0,  -1.0,  1.0,
-        1.0,  -1.0, -1.0,
-
-
-        // Right face
-        1.0, -1.0, -1.0,
-        1.0,  1.0, -1.0,
-        1.0,  1.0,  1.0,
-
-        1.0, -1.0, -1.0,
-        1.0,  1.0,  1.0,
-        1.0, -1.0,  1.0,
-
-        // Left face
-        -1.0, -1.0, -1.0,
-        -1.0,  1.0, -1.0,
-        -1.0,  1.0,  1.0,
-
-        -1.0, -1.0, -1.0,
-        -1.0,  1.0,  1.0,
-        -1.0, -1.0,  1.0,
+        // // Front face
+        // -1.0, -1.0,  1.0,
+        // 1.0, -1.0,  1.0,
+        // 1.0,  1.0,  1.0,
+        //
+        // -1.0, -1.0,  1.0,
+        // 1.0,  1.0,  1.0,
+        // -1.0,  1.0,  1.0,
+        //
+        // // Back face
+        // -1.0, -1.0,  -1.0,
+        // 1.0, -1.0,  -1.0,
+        // 1.0,  1.0,  -1.0,
+        //
+        // -1.0, -1.0,  -1.0,
+        // 1.0,  1.0,  -1.0,
+        // -1.0,  1.0,  -1.0,
+        //
+        // // Top face
+        // -1.0,  1.0, -1.0,
+        // -1.0,  1.0,  1.0,
+        // 1.0,  1.0,  1.0,
+        //
+        // -1.0,  1.0, -1.0,
+        // 1.0,  1.0,  1.0,
+        // 1.0,  1.0, -1.0,
+        //
+        // // Bottom face
+        // -1.0,  -1.0, -1.0,
+        // -1.0,  -1.0,  1.0,
+        // 1.0,  -1.0,  1.0,
+        //
+        // -1.0,  -1.0, -1.0,
+        // 1.0,  -1.0,  1.0,
+        // 1.0,  -1.0, -1.0,
+        //
+        //
+        // // Right face
+        // 1.0, -1.0, -1.0,
+        // 1.0,  1.0, -1.0,
+        // 1.0,  1.0,  1.0,
+        //
+        // 1.0, -1.0, -1.0,
+        // 1.0,  1.0,  1.0,
+        // 1.0, -1.0,  1.0,
+        //
+        // // Left face
+        // -1.0, -1.0, -1.0,
+        // -1.0,  1.0, -1.0,
+        // -1.0,  1.0,  1.0,
+        //
+        // -1.0, -1.0, -1.0,
+        // -1.0,  1.0,  1.0,
+        // -1.0, -1.0,  1.0,
     ];
 
     var randomSize;
     var randomSizeH;
     var ccc = 0;
-    for ( var i = 0; i < PARTICLES * 3; i+= 3 * 3 * 12 ) {
+    for ( var i = 0; i < PARTICLES * 3; i+= 3 * 3 * 4 ) {
         // console.log( ++ccc );
         randomSize = 0.1 + Math.random()*2.0;
         randomSizeH = 0.1 + Math.random()*2.0;
@@ -308,7 +345,7 @@ function initProtoplanets() {
     // var particles = new THREE.Line( particleGeometry, particleMaterial );
     particles.matrixAutoUpdate = false;
     particles.updateMatrix();
-    scene.add( particles );
+    // scene.add( particles );
 
     var m = new THREE.Matrix4();
     m.copy( particles.matrixWorld );
@@ -331,80 +368,48 @@ function initProtoplanets() {
 
 
     // make particle
-    const BODY_NUM = 36*2000;
+    const BODY_NUM = 36*80;
     var bodyGeometry = new THREE.BufferGeometry();
     var bodyPositions = new Float32Array( BODY_NUM * 3 );
 
-    var ww = 0.005;
-    var hh = 0.01;
-    var zz = 0.005;
+    var ww = 0.05;
+    var hh = 0.05;
+    var zz = 0.05;
+
+    /*
+    0.0, -1.0,-1.0,
+    0.0, 1.0, 0.0,
+    0.866025, -1.0, 0.5,
+    -0.866025, -1.0, 0.5,
+     */
 
     var BOX_ARRAY = [
-        // Front face
-        -1.0, -1.0,  1.0,
-        1.0, -1.0,  1.0,
-        1.0,  1.0,  1.0,
+        0.0, -1.0,-1.0,
+        0.0, 1.0, 0.0,
+        0.866025, -1.0, 0.5,
 
-        -1.0, -1.0,  1.0,
-        1.0,  1.0,  1.0,
-        -1.0,  1.0,  1.0,
+        0.866025, -1.0, 0.5,
+        0.0, 1.0, 0.0,
+        -0.866025, -1.0, 0.5,
 
-        // Back face
-        -1.0, -1.0,  -1.0,
-        1.0, -1.0,  -1.0,
-        1.0,  1.0,  -1.0,
+        -0.866025, -1.0, 0.5,
+        0.0, 1.0, 0.0,
+        0.0, -1.0,-1.0,
 
-        -1.0, -1.0,  -1.0,
-        1.0,  1.0,  -1.0,
-        -1.0,  1.0,  -1.0,
-
-        // Top face
-        -1.0,  1.0, -1.0,
-        -1.0,  1.0,  1.0,
-        1.0,  1.0,  1.0,
-
-        -1.0,  1.0, -1.0,
-        1.0,  1.0,  1.0,
-        1.0,  1.0, -1.0,
-
-        // Bottom face
-        -1.0,  -1.0, -1.0,
-        -1.0,  -1.0,  1.0,
-        1.0,  -1.0,  1.0,
-
-        -1.0,  -1.0, -1.0,
-        1.0,  -1.0,  1.0,
-        1.0,  -1.0, -1.0,
-
-
-        // Right face
-        1.0, -1.0, -1.0,
-        1.0,  1.0, -1.0,
-        1.0,  1.0,  1.0,
-
-        1.0, -1.0, -1.0,
-        1.0,  1.0,  1.0,
-        1.0, -1.0,  1.0,
-
-        // Left face
-        -1.0, -1.0, -1.0,
-        -1.0,  1.0, -1.0,
-        -1.0,  1.0,  1.0,
-
-        -1.0, -1.0, -1.0,
-        -1.0,  1.0,  1.0,
-        -1.0, -1.0,  1.0,
+        0.0, -1.0,-1.0,
+        0.866025, -1.0, 0.5,
+        -0.866025, -1.0, 0.5,
     ];
 
     var randomSize;
-    var randomSizeH;
-    for ( var i = 0; i < BODY_NUM * 3; i+= 3 * 3 * 12 ) {
-        randomSize = (Math.random()+Math.random()+Math.random()+Math.random()+Math.random())/5.0;
-        randomSizeH = 1.0 + Math.random()*2.0;
+    // var randomSizeH;
+    for ( var i = 0; i < BODY_NUM * 3; i+= 3 * 3 * 4 ) {
+        randomSize  = Math.random()*2.0-1.0+i*0.0001;
+        // randomSizeH = (Math.random()+Math.random()+Math.random()+Math.random()+Math.random())/5.0;
         for( var k = 0; k < 3*3*12; k+=3 ){
-            bodyPositions[i + k + 0] = BOX_ARRAY[k+0]*ww*randomSizeH*1.0;
-            bodyPositions[i + k + 1] = BOX_ARRAY[k+1]*hh*(randomSizeH/2.0);
-            bodyPositions[i + k + 2] = BOX_ARRAY[k+2]*zz*randomSize*4.0;
+            bodyPositions[i + k + 0] = BOX_ARRAY[k+0]*ww*randomSize;// * randomSize*2.;//*randomSize*40.0;
+            bodyPositions[i + k + 1] = BOX_ARRAY[k+1]*ww*randomSize;// * randomSizeH*3.;//*randomSize*40.0;
+            bodyPositions[i + k + 2] = BOX_ARRAY[k+2]*ww*randomSize;// * randomSizeH*2.;//*randomSizeH*50.0;
         }
     }
 
@@ -417,6 +422,13 @@ function initProtoplanets() {
         }
     }
 
+    var bodyRotation = new Float32Array( BODY_NUM * 3 );
+    for ( var i = 0; i < BODY_NUM * 3; i+= 3 ) {
+        bodyRotation[i+0] = Math.random()*2.0-1.0;
+        bodyRotation[i+1] = Math.random()*2.0-1.0;
+        bodyRotation[i+2] = Math.random()*2.0-1.0;
+    }
+
     var bodyIndex = new Float32Array( BODY_NUM );
     for ( var i = 0; i < BODY_NUM ; i++ ) {
         bodyIndex[i] = i;
@@ -424,6 +436,7 @@ function initProtoplanets() {
 
     bodyGeometry.addAttribute( 'position', new THREE.BufferAttribute( bodyPositions, 3 ) );
     bodyGeometry.addAttribute( 'uv', new THREE.BufferAttribute( bodyUVs, 2 ) );
+    bodyGeometry.addAttribute( 'bodyRotation', new THREE.BufferAttribute( bodyRotation, 3 ) );
     bodyGeometry.addAttribute( 'bodyIndex', new THREE.BufferAttribute( bodyIndex, 1 ) );
 
 
@@ -434,6 +447,7 @@ function initProtoplanets() {
             texturePosition:     { value: null },
             textureVelocity:     { value: null },
             textureAcceleration: { value: null },
+            // audioGain: { type: "t", value: null },    // integer array (plain)
             cameraConstant: { value: getCameraConstant( camera ) },
             invMatrix: { value: new THREE.Matrix4() },
         }
@@ -505,7 +519,9 @@ function initProtoplanets() {
     var onError = function ( xhr ) {
     };
 
-    var modelFile = 'models/mmd/miku/kyozai.pmx';
+    //https://bowlroll.net/file/23365
+    var modelFile = 'models/mmd/miku/ki1.pmd';
+    // var modelFile = 'models/mmd/miku/miku_v2.pmd';
     var vmdFiles = [ 'models/mmd/vmds/wavefile_v2.vmd' ];
 
     helper = new THREE.MMDHelper();
@@ -608,7 +624,7 @@ function fillTextures( texturePosition, textureVelocity, textureAcceleration ) {
         var posrX = Math.random() - .5;
         var posrY = Math.random() + 0.3;// - .5;
         var posrZ = Math.random() - 0.5;
-        var w = Math.random()*23000;
+        var w = count;//Math.random()*9000;
 
         // posArrayの実態は一次元配列なので
         // x,y,z,wの順番に埋めていく。
@@ -658,6 +674,7 @@ function getCameraConstant( camera ) {
 
 function animate() {
     requestAnimationFrame( animate );
+    soundCloud.update();
     render();
 }
 
@@ -694,6 +711,7 @@ function render() {
     //pass mmd skineed mesh data to particle shader to calculate final particle position
     particleUniforms.texture1.value = bufferTexture.texture;
     bodyUniforms.texture1.value = bufferTexture.texture;
+    // bodyUniforms.audioGain.value = [1,2];//soundCloud.getBytes();
 
 
 
