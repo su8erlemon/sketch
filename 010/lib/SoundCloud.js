@@ -89,81 +89,81 @@ class SoundCloud {
         }
     }
 
-    debugShow() {
-
-        var canvasElement = document.getElementById('SoundCloudController_debug');
-        canvasElement.style.zIndex = 9999;
-        canvasElement.style.position = "absolute";
-        canvasElement.style.top = "0px";
-        canvasElement.style.left = "0px";
-        var ctx = canvasElement.getContext("2d");
-
-        var $p = new Processing(canvasElement);
-        var CANVAS_WIDTH = 1024;
-        var CANVAS_HEIGHT = 300;
-
-        $p.setup = function () {
-            $p.frameRate(32);
-            $p.noLoop();
-            $p.background(0); // prevet white flash at the start of rendering
-            $p.size(CANVAS_WIDTH, 500);
-        };
-
-        var UNIT_COUNT = _analyser.frequencyBinCount;
-        var UNIT_HEIGHT = Math.round(CANVAS_HEIGHT / 512); // round to align bars
-        var UNIT_WIDTH = Math.round(CANVAS_WIDTH / UNIT_COUNT); // round to align bars
-
-        var height = 0;
-        $p.draw = function () {
-
-            _analyser.getByteFrequencyData(_bytes);
-            $p.background(0);
-            $p.stroke(255);
-            $p.fill(255);
-
-            for (var i = 0; i < UNIT_COUNT * 0.1; i++) {
-                height = _bytes[i] + Math.abs(_bytes[i] / calculate_a_weighting(44100 / 2048 * i));
-                //height = bytes[i]/calculate_a_weighting(44100/2048*i);
-                // height *= UNIT_HEIGHT * 0.1;
-                height -= 160;
-                $p.rect(
-                    (i * UNIT_WIDTH) * 10,
-                    500,
-                    (UNIT_WIDTH - 2) * 10,
-                    height * -1
-                );
-
-
-                if (pos) {
-                    ctx.fillStyle = "red";
-                    ctx.font = 'italic 400 24px Unknown Font, sans-serif';
-                    ctx.fillText(parseInt(pos.x * 0.1), parseInt(pos.x * 0.1) * 10, pos.y - 30);
-                    ctx.fillStyle = "white";
-                }
-
-            }
-        }
-
-        // start rendering
-        $p.setup();
-        $p.loop();
-
-        var pos;
-        canvasElement.onmousemove = function (e) {
-            pos = getMousePos(canvasElement, e);
-        }
-
-        function getMousePos(canvas, evt) {
-            var rect = canvas.getBoundingClientRect(), // abs. size of element
-                scaleX = canvas.width / rect.width,    // relationship bitmap vs. element for X
-                scaleY = canvas.height / rect.height;  // relationship bitmap vs. element for Y
-
-            return {
-                x: (evt.clientX - rect.left) * scaleX,   // scale mouse coordinates after they have
-                y: (evt.clientY - rect.top) * scaleY     // been adjusted to be relative to element
-            }
-        }
-    }
+    // debugShow() {
+    //
+    //     var canvasElement = document.getElementById('SoundCloudController_debug');
+    //     canvasElement.style.zIndex = 9999;
+    //     canvasElement.style.position = "absolute";
+    //     canvasElement.style.top = "0px";
+    //     canvasElement.style.left = "0px";
+    //     var ctx = canvasElement.getContext("2d");
+    //
+    //     var $p = new Processing(canvasElement);
+    //     var CANVAS_WIDTH = 1024;
+    //     var CANVAS_HEIGHT = 300;
+    //
+    //     $p.setup = function () {
+    //         $p.frameRate(32);
+    //         $p.noLoop();
+    //         $p.background(0); // prevet white flash at the start of rendering
+    //         $p.size(CANVAS_WIDTH, 500);
+    //     };
+    //
+    //     var UNIT_COUNT = _analyser.frequencyBinCount;
+    //     var UNIT_HEIGHT = Math.round(CANVAS_HEIGHT / 512); // round to align bars
+    //     var UNIT_WIDTH = Math.round(CANVAS_WIDTH / UNIT_COUNT); // round to align bars
+    //
+    //     var height = 0;
+    //     $p.draw = function () {
+    //
+    //         _analyser.getByteFrequencyData(_bytes);
+    //         $p.background(0);
+    //         $p.stroke(255);
+    //         $p.fill(255);
+    //
+    //         for (var i = 0; i < UNIT_COUNT * 0.1; i++) {
+    //             height = _bytes[i] + Math.abs(_bytes[i] / calculate_a_weighting(44100 / 2048 * i));
+    //             //height = bytes[i]/calculate_a_weighting(44100/2048*i);
+    //             // height *= UNIT_HEIGHT * 0.1;
+    //             height -= 160;
+    //             $p.rect(
+    //                 (i * UNIT_WIDTH) * 10,
+    //                 500,
+    //                 (UNIT_WIDTH - 2) * 10,
+    //                 height * -1
+    //             );
+    //
+    //
+    //             if (pos) {
+    //                 ctx.fillStyle = "red";
+    //                 ctx.font = 'italic 400 24px Unknown Font, sans-serif';
+    //                 ctx.fillText(parseInt(pos.x * 0.1), parseInt(pos.x * 0.1) * 10, pos.y - 30);
+    //                 ctx.fillStyle = "white";
+    //             }
+    //
+    //         }
+    //     }
+    //
+    //     // start rendering
+    //     $p.setup();
+    //     $p.loop();
+    //
+    //     var pos;
+    //     canvasElement.onmousemove = function (e) {
+    //         pos = getMousePos(canvasElement, e);
+    //     }
+    //
+    //     function getMousePos(canvas, evt) {
+    //         var rect = canvas.getBoundingClientRect(), // abs. size of element
+    //             scaleX = canvas.width / rect.width,    // relationship bitmap vs. element for X
+    //             scaleY = canvas.height / rect.height;  // relationship bitmap vs. element for Y
+    //
+    //         return {
+    //             x: (evt.clientX - rect.left) * scaleX,   // scale mouse coordinates after they have
+    //             y: (evt.clientY - rect.top) * scaleY     // been adjusted to be relative to element
+    //         }
+    //     }
+    // }
 
     getControllerElement() {
         return _menuControllerElement;

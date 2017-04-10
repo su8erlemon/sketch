@@ -39,7 +39,8 @@ void main() {
 
 
     vec3 acc = tmpAcc.xyz;
-    (tmpVel.w>10.)?(acc = (tmpDan-tmpDan2 )*0.015 + vec3( 0.0000, -0.001-rand1(tmpDan.xz)*0.0005, -0.00)):vec3(0.0);
+    (tmpVel.w>10.)?(acc = (tmpDan-tmpDan2 )*0.015 + vec3( 0.0000, -0.001-rand1(tmpDan.xz)*0.0005, 0.000)):vec3(0.0);
+//    (tmpVel.w>10.)?(acc = (tmpDan-tmpDan2 )*0.001 + vec3( 0.0000, -0.0001-rand1(tmpDan.xz)*0.00005, -0.001)):vec3(0.0);
 
 
 

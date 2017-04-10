@@ -30,7 +30,7 @@ void main() {
     vec3 lightDirection = normalize( vPosition - lightPos );
 
     vec3 invLight = normalize(invMatrix * vec4(lightDirection, 0.0)).xyz;
-    float diffuse  = clamp(dot(fnormal, invLight), 0.0, 1.0);
+    float diffuse  = clamp(dot(fnormal, invLight), .5, 1.0);
 
     vUv;
     vColor;

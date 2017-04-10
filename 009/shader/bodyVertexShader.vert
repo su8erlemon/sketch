@@ -6,6 +6,10 @@ uniform sampler2D textureAcceleration;
 uniform float cameraConstant;
 uniform float density;
 
+uniform float soundCloudLow;
+uniform float soundCloudHigh;
+
+
 varying vec3 vPosition;
 varying vec4 vColor;
 varying vec2 vUv;
@@ -15,6 +19,7 @@ uniform float radius;
 
 
 uniform sampler2D texture1;
+uniform sampler2D soundCloudTexture;
 //varying vec4 vColor;
 
 attribute float bodyIndex;
@@ -41,12 +46,17 @@ void main() {
 
 
 
-    float index = tmpPos.w*100.0;//rand(tmpPos.xy)*12200.;
+    float index = tmpPos.w*100.;//rand(tmpPos.xy)*12200.;
     float pu = fract(index * frag + texShift);
     float pv = floor(index * frag) * frag + texShift;
     vec3 tmpDan = texture2D( texture1, vec2(pu, pv)).rgb * 2.0 - 1.0;
 
 
+
+    vec3 soundCloud = texture2D( soundCloudTexture, vec2(pu, pv)).rgb*2.0;
+    float power = length(soundCloud) * soundCloudLow;
+
+//    tmpDan *= 1.0+soundCloud;
 
 
 
@@ -81,24 +91,33 @@ void main() {
     mat3 matz =  mat3(
       cosrz , sinrz, 0,
       -sinrz, cosrz, 0,
-      0     , 0    , 1
+      0     , 0    , aa
     );
+    mat3 scale =  mat3(
+      power , 0, 0,
+      0, power, 0,
+      0     , 0  , power
+    );
+    mat3 trans =  mat3(
+          1 , 0, 0,
+          0,1, 0,
+          power  , power    , 1
+        );
 
-    newPosition = maty * matz * newPosition;
+
+    newPosition = scale * maty * matz  * newPosition;
 
 
 //    newPosition += pos;
 
 
-
-//    tmpDan.x += rand(tmpPos.yx)*0.025-0.0125;
-//    tmpDan.y += rand(tmpPos.xz)*0.025-0.0125;
-//    tmpDan.z += rand(tmpPos.xz)*0.025-0.0125;
+    power *= 0.01;
+    tmpDan.x += rand(tmpPos.yx)*power - power*.5;
+    tmpDan.y += rand(tmpPos.xz)*power - power*.5;
+    tmpDan.z += rand(tmpPos.xz)*power - power*.5;
 
 
     newPosition += tmpDan;
-
-//    newPosition += vec3( audioGain[0] )*0.1;
 
     // ポイントのサイズを決定
 //    vec4 mvPosition =
@@ -115,8 +134,9 @@ void main() {
     //vColor = vec4( 1.0, 1.0, 1.0 - accTemp.w * 0.03 , 1.0 );
 
 //    vColor = vec4( 0.0/255.0, 250.0/255.0, 92.0/255.0, 1.0 );
-//    vColor = vec4( 247.0/255.0, 40.0/255.0, 92.0/255.0, 1.0 );
-    vColor = vec4( newPosition-bodyRotation*0.1, 1.0 );
+    vColor = vec4( 255.0/255.0, 40.0/255.0, 92.0/255.0, 1.0 );
+//    vColor = vec4( 230.0/255.0, 230.0/255.0, 230.0/255.0, 1.0 );
+//    vColor = vec4( newPosition-bodyRotation*0.1, 1.0 );
 
 
 }
