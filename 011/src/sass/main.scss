@@ -194,8 +194,8 @@ body{
 
 
 body{
-  //background-color: #4c2177;
-  background-color: #989898;
+  background-color: #4c2177;
+  //background-color: #989898;
 }
 
 
@@ -254,13 +254,9 @@ body{
     background-color: #faf0d5;
   }
 
-  .text-2{
-    text{
-      fill: #4c2177;
-    }
-    rect{
-      fill: #33dfa0;
-    }
+  .text-2 li{
+    color: #4c2177;
+    background-color: #33dfa0;
   }
 
 }
@@ -293,16 +289,13 @@ body{
 
 
 .init-transY{
-  //transform: translateY(50px) translateX(10px);
+  transform: translateY(50px) translateX(10px);
 }
-//
 @-webkit-keyframes transY{
   0% {
     transform: translateY(50px) translateX(10px);
-    -webkit-transform: translateY(50px) translateX(10px);
   }
   100% {
     transform: translateY(0px) translateX(0px);
-    -webkit-transform: translateY(0px) translateX(0px);
   }
 }

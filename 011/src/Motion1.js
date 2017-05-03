@@ -17,7 +17,7 @@ class Motion1 extends React.Component {
             console.log($(this)[0].offsetTop)
             text.push({
                 x: $(this)[0].offsetLeft,
-                y: $(this)[0].offsetTop,
+                y: $(this)[0].offsetTop+50,
                 width: $(this).width()+1,
                 height: $(this).height(),
                 word: $(this)[0].innerHTML,
@@ -26,7 +26,7 @@ class Motion1 extends React.Component {
         this.setState({text});
 
         setTimeout(()=>{
-            // this.setState({isClose:true});
+            this.setState({isClose:true});
         },3000)
     }
 
@@ -73,7 +73,7 @@ class Motion1 extends React.Component {
                             animation: (this.state.isClose?'scale1':'scale0') + ' 0.8s cubic-bezier(0.19, 1, 0.22, 1) ' + delay + 's forwards',
                         };
                         return <clipPath key={index} id={"clip-" + index}>
-                            <rect className={this.state.isClose?"init-scale1":"init-scale0"} style={style} x={value.x} y={value.y} width={value.width+5*2+1} height={value.height+1}/>
+                            <rect className={this.state.isClose?"init-scale1":"init-scale0"} style={style} x="-1" y="0" width={value.width+5*2+1} height={value.height+1}/>
                         </clipPath>
                     })}
                     {this.state.text.map((value,index)=>{
@@ -88,29 +88,25 @@ class Motion1 extends React.Component {
                     </defs>
                 </svg>
 
-                <svg width="500" height="500" className="text-2">
+                <ul className="text-2">
                     {this.state.text.map((value,index)=>{
                         const style = {
                             animation: 'transY 1.0s cubic-bezier(0.19, 1, 0.22, 1) ' + (index * 0.1  + (index%3) * 0.1) + 's forwards',
                             clipPath:"url(#clip-" + index + ")",
                         };
-                        return <g key={index} >
-                            <rect x={value.x} y={value.y} style={style} width={value.width+10} height={value.height} className="init-transY"></rect>
-                            <text x={value.x} y={value.y} style={style} className="init-transY">{value.word}</text>
-                        </g>
+                        return <li key={index} style={style} className="init-transY">{value.word}</li>
                     })}
-                </svg>
+                </ul>
 
-                {/*<ul className="text-1">*/}
-                    {/*{this.state.text.map((value,index)=>{*/}
-                        {/*const style = {*/}
-                            {/*animation: 'transY 1.0s cubic-bezier(0.19, 1, 0.22, 1) ' + (0.2+index * 0.1  + (index%3) * 0.1) + 's',*/}
-                            {/*animationFillMode: "forwards",*/}
-                            {/*clipPath:"url(#clip2-" + index + ")",*/}
-                        {/*};*/}
-                        {/*return <li key={index} style={style} className="init-transY">{value.word}</li>*/}
-                    {/*})}*/}
-                {/*</ul>*/}
+                <ul className="text-1">
+                    {this.state.text.map((value,index)=>{
+                        const style = {
+                            animation: 'transY 1.0s cubic-bezier(0.19, 1, 0.22, 1) ' + (0.2+index * 0.1  + (index%3) * 0.1) + 's forwards',
+                            clipPath:"url(#clip2-" + index + ")",
+                        };
+                        return <li key={index} style={style} className="init-transY">{value.word}</li>
+                    })}
+                </ul>
 
                 <ul className="dummy">
                     <li>Lorem</li>
