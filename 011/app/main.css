@@ -9,245 +9,80 @@ html, body, .container {
 body {
   position: relative; }
 
-.container {
-  position: relative; }
+.tokens_clip text {
+  clip-path: url(#myClip); }
 
-.text-container {
+.aa {
+  fill: red;
+  font-size: 50px;
+  clip-path: url(#myClip); }
+
+body {
+  background-color: #989898; }
+
+#root {
+  width: 100%;
+  height: 100%; }
+
+.center {
   position: absolute;
   top: 0px;
   left: 0px;
   right: 0px;
   bottom: 0px;
-  width: 300px;
-  height: 232px;
-  margin: auto;
-  display: inline-block; }
-  .text-container ul {
-    font-size: 0px; }
-  .text-container ul li {
-    font-size: 50px;
-    font-family: Helvetica;
-    font-weight: 700;
+  width: 480px;
+  height: 174px;
+  margin: auto; }
+
+.motion-1 {
+  font-size: 50px;
+  font-family: Helvetica;
+  font-weight: 700;
+  color: #fff; }
+  .motion-1 .dummy {
+    visibility: hidden;
+    position: absolute; }
+  .motion-1 svg {
+    position: absolute; }
+  .motion-1 ul {
+    width: 500px; }
+  .motion-1 ul li {
     padding: 0 5px;
     display: inline-block; }
-  .text-container .text-1, .text-container .text-2 {
+  .motion-1 .text-1, .motion-1 .text-2 {
     position: absolute;
     top: 0px;
     left: 0px; }
-  .text-container .text-1 li {
+  .motion-1 .text-1 li {
     color: #4c2177;
-    background-color: #faf0d5;
-    transform: translateY(200%);
-    animation: show 1s cubic-bezier(0.19, 1, 0.22, 1);
-    animation-fill-mode: forwards;
-    position: relative; }
-    .text-container .text-1 li > div {
-      width: 100%;
-      background-color: #4c2177;
-      height: 60px;
-      position: absolute;
-      left: 0px;
-      animation: width-1 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-      animation-fill-mode: forwards; }
-  .text-container.close .text-1 li {
-    transform: translateY(0%);
-    animation: hide 1s cubic-bezier(0.19, 1, 0.22, 1);
-    animation-fill-mode: forwards; }
-    .text-container.close .text-1 li > div {
-      width: 0%;
-      animation: width-2 0.6s cubic-bezier(0.19, 1, 0.22, 1);
-      animation-fill-mode: forwards; }
-  .text-container .text-2 li {
-    color: #4c2177;
-    background-color: #33dfa0;
-    transform: translateY(200%);
-    animation: show 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
-    animation-fill-mode: forwards;
-    position: relative; }
-    .text-container .text-2 li > div {
-      width: 100%;
-      background-color: #4c2177;
-      height: 60px;
-      position: absolute;
-      left: 0px;
-      animation: width-1 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
-      animation-fill-mode: forwards; }
-  .text-container.close .text-2 li {
-    transform: translateY(0%);
-    animation: hide 1s cubic-bezier(0.19, 1, 0.22, 1);
-    animation-fill-mode: forwards; }
-    .text-container.close .text-2 li > div {
-      width: 0%;
-      animation: width-2 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
-      animation-fill-mode: forwards; }
-  .text-container .text-1 li:nth-child(1) {
-    animation-delay: 0.08s; }
-  .text-container .text-1 li:nth-child(1) > div {
-    animation-delay: 0.27s; }
-  .text-container .text-2 li:nth-child(1) {
-    animation-delay: 0.02s; }
-  .text-container .text-2 li:nth-child(1) > div {
-    animation-delay: 0.24s; }
-  .text-container.close .text-1 li:nth-child(1) {
-    animation-delay: 0.42s; }
-  .text-container.close .text-1 li:nth-child(1) > div {
-    animation-delay: 0.18s; }
-  .text-container.close .text-2 li:nth-child(1) {
-    animation-delay: 0.33s; }
-  .text-container.close .text-2 li:nth-child(1) > div {
-    animation-delay: 0.27s; }
-  .text-container .text-1 li:nth-child(2) {
-    animation-delay: 0.16s; }
-  .text-container .text-1 li:nth-child(2) > div {
-    animation-delay: 0.54s; }
-  .text-container .text-2 li:nth-child(2) {
-    animation-delay: 0.04s; }
-  .text-container .text-2 li:nth-child(2) > div {
-    animation-delay: 0.48s; }
-  .text-container.close .text-1 li:nth-child(2) {
-    animation-delay: 0.44s; }
-  .text-container.close .text-1 li:nth-child(2) > div {
-    animation-delay: 0.16s; }
-  .text-container.close .text-2 li:nth-child(2) {
-    animation-delay: 0.36s; }
-  .text-container.close .text-2 li:nth-child(2) > div {
-    animation-delay: 0.24s; }
-  .text-container .text-1 li:nth-child(3) {
-    animation-delay: 0.24s; }
-  .text-container .text-1 li:nth-child(3) > div {
-    animation-delay: 0.21s; }
-  .text-container .text-2 li:nth-child(3) {
-    animation-delay: 0.06s; }
-  .text-container .text-2 li:nth-child(3) > div {
-    animation-delay: 0.12s; }
-  .text-container.close .text-1 li:nth-child(3) {
-    animation-delay: 0.28s; }
-  .text-container.close .text-1 li:nth-child(3) > div {
-    animation-delay: 0.14s; }
-  .text-container.close .text-2 li:nth-child(3) {
-    animation-delay: 0.21s; }
-  .text-container.close .text-2 li:nth-child(3) > div {
-    animation-delay: 0.21s; }
-  .text-container .text-1 li:nth-child(4) {
-    animation-delay: 0.32s; }
-  .text-container .text-1 li:nth-child(4) > div {
-    animation-delay: 0.48s; }
-  .text-container .text-2 li:nth-child(4) {
-    animation-delay: 0.08s; }
-  .text-container .text-2 li:nth-child(4) > div {
-    animation-delay: 0.36s; }
-  .text-container.close .text-1 li:nth-child(4) {
-    animation-delay: 0.3s; }
-  .text-container.close .text-1 li:nth-child(4) > div {
-    animation-delay: 0.12s; }
-  .text-container.close .text-2 li:nth-child(4) {
-    animation-delay: 0.24s; }
-  .text-container.close .text-2 li:nth-child(4) > div {
-    animation-delay: 0.18s; }
-  .text-container .text-1 li:nth-child(5) {
-    animation-delay: 0.4s; }
-  .text-container .text-1 li:nth-child(5) > div {
-    animation-delay: 0.75s; }
-  .text-container .text-2 li:nth-child(5) {
-    animation-delay: 0.1s; }
-  .text-container .text-2 li:nth-child(5) > div {
-    animation-delay: 0.6s; }
-  .text-container.close .text-1 li:nth-child(5) {
-    animation-delay: 0.32s; }
-  .text-container.close .text-1 li:nth-child(5) > div {
-    animation-delay: 0.1s; }
-  .text-container.close .text-2 li:nth-child(5) {
-    animation-delay: 0.27s; }
-  .text-container.close .text-2 li:nth-child(5) > div {
-    animation-delay: 0.15s; }
-  .text-container .text-1 li:nth-child(6) {
-    animation-delay: 0.48s; }
-  .text-container .text-1 li:nth-child(6) > div {
-    animation-delay: 0.42s; }
-  .text-container .text-2 li:nth-child(6) {
-    animation-delay: 0.12s; }
-  .text-container .text-2 li:nth-child(6) > div {
-    animation-delay: 0.24s; }
-  .text-container.close .text-1 li:nth-child(6) {
-    animation-delay: 0.16s; }
-  .text-container.close .text-1 li:nth-child(6) > div {
-    animation-delay: 0.08s; }
-  .text-container.close .text-2 li:nth-child(6) {
-    animation-delay: 0.12s; }
-  .text-container.close .text-2 li:nth-child(6) > div {
-    animation-delay: 0.12s; }
-  .text-container .text-1 li:nth-child(7) {
-    animation-delay: 0.56s; }
-  .text-container .text-1 li:nth-child(7) > div {
-    animation-delay: 0.69s; }
-  .text-container .text-2 li:nth-child(7) {
-    animation-delay: 0.14s; }
-  .text-container .text-2 li:nth-child(7) > div {
-    animation-delay: 0.48s; }
-  .text-container.close .text-1 li:nth-child(7) {
-    animation-delay: 0.18s; }
-  .text-container.close .text-1 li:nth-child(7) > div {
-    animation-delay: 0.06s; }
-  .text-container.close .text-2 li:nth-child(7) {
-    animation-delay: 0.15s; }
-  .text-container.close .text-2 li:nth-child(7) > div {
-    animation-delay: 0.09s; }
-  .text-container .text-1 li:nth-child(8) {
-    animation-delay: 0.64s; }
-  .text-container .text-1 li:nth-child(8) > div {
-    animation-delay: 0.96s; }
-  .text-container .text-2 li:nth-child(8) {
-    animation-delay: 0.16s; }
-  .text-container .text-2 li:nth-child(8) > div {
-    animation-delay: 0.72s; }
-  .text-container.close .text-1 li:nth-child(8) {
-    animation-delay: 0.2s; }
-  .text-container.close .text-1 li:nth-child(8) > div {
-    animation-delay: 0.04s; }
-  .text-container.close .text-2 li:nth-child(8) {
-    animation-delay: 0.18s; }
-  .text-container.close .text-2 li:nth-child(8) > div {
-    animation-delay: 0.06s; }
-  .text-container .text-1 li:nth-child(9) {
-    animation-delay: 0.72s; }
-  .text-container .text-1 li:nth-child(9) > div {
-    animation-delay: 0.63s; }
-  .text-container .text-2 li:nth-child(9) {
-    animation-delay: 0.18s; }
-  .text-container .text-2 li:nth-child(9) > div {
-    animation-delay: 0.36s; }
-  .text-container.close .text-1 li:nth-child(9) {
-    animation-delay: 0.04s; }
-  .text-container.close .text-1 li:nth-child(9) > div {
-    animation-delay: 0.02s; }
-  .text-container.close .text-2 li:nth-child(9) {
-    animation-delay: 0.03s; }
-  .text-container.close .text-2 li:nth-child(9) > div {
-    animation-delay: 0.03s; }
+    background-color: #faf0d5; }
+  .motion-1 .text-2 text {
+    fill: #4c2177; }
+  .motion-1 .text-2 rect {
+    fill: #33dfa0; }
 
-@-webkit-keyframes show {
-  from {
-    transform: translateY(200%); }
-  to {
-    transform: translateY(0%); } }
+.init-scale0 {
+  transform: scaleX(0); }
 
-@-webkit-keyframes hide {
-  from {
-    transform: translateY(0%); }
-  to {
-    transform: translateY(-200%); } }
+.init-scale1 {
+  transform: scaleX(1); }
 
-@-webkit-keyframes width-1 {
-  from {
-    width: 100%; }
-  to {
-    width: 0%; } }
+@-webkit-keyframes scale0 {
+  0% {
+    transform: scaleX(0); }
+  100% {
+    transform: scaleX(1); } }
 
-@-webkit-keyframes width-2 {
-  from {
-    width: 0%; }
-  to {
-    width: 100%; } }
+@-webkit-keyframes scale1 {
+  0% {
+    transform: scaleX(1); }
+  100% {
+    transform: scaleX(0); } }
 
-body {
-  background-color: #4c2177; }
+@-webkit-keyframes transY {
+  0% {
+    transform: translateY(50px) translateX(10px);
+    -webkit-transform: translateY(50px) translateX(10px); }
+  100% {
+    transform: translateY(0px) translateX(0px);
+    -webkit-transform: translateY(0px) translateX(0px); } }

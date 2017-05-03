@@ -1,14 +1,9 @@
-const domify = require('domify')
-require('domready')(() => {
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-    console.log("aaa2")
+import Motion1 from './Motion1'
 
-    // $("body").bind("click",function(){
-    //     $(".text-container").addClass("close");
-    // });
-    //
-    // setTimeout(function(){
-    //     $(".text-container").addClass("close");
-    // },2000)
-
-})
+ReactDOM.render(
+    <div className="center"><Motion1/></div>,
+    document.getElementById('root')
+);
