@@ -1,0 +1,184 @@
+*{
+  margin: 0px;
+  padding: 0px;
+}
+
+html, body,.container{
+  width: 100%;
+  height: 100%;
+}
+
+body{
+  position: relative;
+}
+
+.container{
+  position: relative;
+}
+
+.text-container{
+
+  position: absolute;
+
+  top:0px;
+  left:0px;
+  right:0px;
+  bottom:0px;
+
+  width: 300px;
+  height: 58*4px;
+
+  margin: auto;
+
+  display: inline-block;
+
+  ul{
+    font-size: 0px;
+  }
+
+  ul li{
+
+    font-size: 50px;
+    font-family: Helvetica;
+    font-weight: 700;
+
+    padding: 0 5px;
+    display: inline-block
+
+  }
+
+  .text-1,.text-2{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+  }
+
+  .text-1 li{
+    color: #4c2177;
+    background-color: #faf0d5;
+
+    transform: translateY(200%);
+
+    animation: show 1.0s cubic-bezier(0.19, 1, 0.22, 1);
+    animation-fill-mode: forwards;
+
+    position: relative;
+
+    &>div{
+      width: 100%;
+      background-color: #4c2177;
+      height: 60px;
+      position: absolute;
+      left: 0px;
+      animation: width-1 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+      animation-fill-mode: forwards;
+    }
+
+  }
+
+  &.close .text-1 li{
+    transform: translateY(0%);
+    animation: hide 1.0s cubic-bezier(0.19, 1, 0.22, 1);
+    animation-fill-mode: forwards;
+    &>div{
+      width: 0%;
+      animation: width-2 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+      animation-fill-mode: forwards;
+    }
+  }
+
+  .text-2 li{
+    color: #4c2177;
+    background-color: #33dfa0;
+
+    transform: translateY(200%);
+
+    animation: show 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+    animation-fill-mode: forwards;
+
+    position: relative;
+
+    &>div{
+      width: 100%;
+      background-color: #4c2177;
+      height: 60px;
+      position: absolute;
+      left: 0px;
+      animation: width-1 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+      animation-fill-mode: forwards;
+    }
+  }
+
+  &.close .text-2 li{
+    transform: translateY(0%);
+    animation: hide 1.0s cubic-bezier(0.19, 1, 0.22, 1);
+    animation-fill-mode: forwards;
+    &>div{
+      width: 0%;
+      animation: width-2 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+      animation-fill-mode: forwards;
+    }
+  }
+
+  @for $i from 1 to 10 {
+    .text-1 li:nth-child(#{$i})     { animation-delay: $i * 0.08s; }
+    .text-1 li:nth-child(#{$i})>div { animation-delay: $i * 0.07s + ($i%3) * 0.2s; }
+    .text-2 li:nth-child(#{$i})     { animation-delay: $i * 0.02s; }
+    .text-2 li:nth-child(#{$i})>div { animation-delay: $i * 0.04s + ($i%3) * 0.2s; }
+
+    &.close{
+      .text-1 li:nth-child(#{$i})     { animation-delay: (10-$i) * 0.04s + ($i%3) * 0.06s; }
+      .text-1 li:nth-child(#{$i})>div { animation-delay: (10-$i) * 0.02s; }
+      .text-2 li:nth-child(#{$i})     { animation-delay: (10-$i) * 0.03s + ($i%3) * 0.06s; }
+      .text-2 li:nth-child(#{$i})>div { animation-delay: (10-$i) * 0.03s; }
+    }
+  }
+
+}
+
+
+
+@-webkit-keyframes show{
+  from {
+    transform: translateY(200%);
+  }
+  to {
+    transform: translateY(0%);
+  }
+}
+
+@-webkit-keyframes hide{
+  from {
+    transform: translateY(0%);
+  }
+  to {
+    transform: translateY(-200%);
+  }
+}
+
+
+@-webkit-keyframes width-1{
+  from {
+    width:100%;
+  }
+  to {
+    width:0%;
+  }
+}
+
+@-webkit-keyframes width-2{
+  from {
+    width:0%;
+  }
+  to {
+    width:100%;
+  }
+}
+
+
+
+
+
+body{
+  background-color: #4c2177;
+}

@@ -50,7 +50,15 @@ window.scene = scene;
 window.THREE = THREE;
 
 
+var light;
+
+var isIdling=true;
 var motionObj;
+var playList = [];
+var stopList = [];
+window.playList = playList;
+window.stopList = stopList;
+
 var mesh;
 var helper;
 var clock = new THREE.Clock();
@@ -102,6 +110,9 @@ var uniforms2;
 
 
 
+var cameraLookAt = new THREE.Vector3(0,0.3,0);
+var cameraLookAt2 = new THREE.Vector3(0,0.3,0);
+var rl1 = 0,r12,rl3;
 
 init();
 animate();
@@ -113,10 +124,10 @@ function init() {
     // camera.position.x = -1;
     // camera.position.y = 1.0;
     // camera.lookAt(new THREE.Vector3(0,0.4,0));
-    camera.position.z = -2.0;
-    camera.position.x = .0;
-    camera.position.y = 0.3;
-    camera.lookAt(new THREE.Vector3(0,0.3,0));
+    // camera.position.z = -2.0;
+    // camera.position.x = .0;
+    // camera.position.y = 0.3;
+    // camera.lookAt(cameraLookAt);
 
 
     initComputeRenderer();
@@ -196,7 +207,7 @@ function initProtoplanets() {
 
 
     // Create light
-    var light = new THREE.PointLight(0xffffff,1.0,100,100);
+    light = new THREE.PointLight(0xffffff,1.0,100,100);
     light.position.set(0,0.8,-2);
     // light.position.set(camera.position);
     scene.add(light);
@@ -489,7 +500,7 @@ function initProtoplanets() {
     // var bodyMarticles2 = new THREE.Line( bodyGeometry, bodyMaterial );
     bodyMarticles.matrixAutoUpdate = false;
     bodyMarticles.updateMatrix();
-    scene.add( bodyMarticles );
+    //sscene.add( bodyMarticles );
     // scene.add( bodyMarticles2 );
 
     var m = new THREE.Matrix4();
@@ -585,6 +596,8 @@ function initProtoplanets() {
         // helper.setAnimation( mesh );
 
 
+
+
         // window.mmdMesh.mixer.timeScale = 1.14814814815;
 
         //debug ==================================================
@@ -614,6 +627,11 @@ function initProtoplanets() {
         var vmdFiles = [
             {name: 'dance1', file: 'models/mmd/vmds/dance.vmd'},
             {name: 'dance2', file: 'models/mmd/vmds/dance2.vmd'},
+            {name: 'dance3', file: 'models/mmd/vmds/pack/northern_soul_spin_combo.vmd'},
+            {name: 'dance4', file: 'models/mmd/vmds/pack/northern_soul_floor_combo.vmd'},
+            {name: 'dance5', file: 'models/mmd/vmds/pack/mma_kick.vmd'},
+            {name: 'dance6', file: 'models/mmd/vmds/pack/breakdance_freezes.vmd'},
+            {name: 'dance7', file: 'models/mmd/vmds/pack/breakdance_footwork_1.vmd'},
         ];
 
         var vmdIndex = 0;
@@ -634,12 +652,54 @@ function initProtoplanets() {
                     for (var i = 0; i < mesh.geometry.animations.length; ++i) {
                         var clip = mesh.geometry.animations[i];
                         var action = mesh.mixer.clipAction(clip);
-                        motionObj[mesh.geometry.animations[i].name] = {
-                            action: action,
-                            weight: 0
-                        }
+                        motionObj[mesh.geometry.animations[i].name] = action;
+                        action.repetitions = 'Infinity';
                     }
                     window.motionObj = motionObj;
+
+                    playList.push( motionObj.dance1 );
+                    motionObj.dance1.play();
+
+                    stopList.push( motionObj.dance2 );
+                    stopList.push( motionObj.dance3 );
+                    stopList.push( motionObj.dance4 );
+                    stopList.push( motionObj.dance5 );
+                    stopList.push( motionObj.dance6 );
+                    stopList.push( motionObj.dance7 );
+
+
+                    window.mmdMesh.mixer.timeScale = 1.11851851851
+
+                    $(document).keypress(function(e) {
+                        switch (e.key){
+                            case 'a':
+                                playAnimation("dance1")
+                                break;
+                            case 's':
+                                playAnimation("dance2")
+                                break;
+
+                            case 'd':
+                                playAnimation("dance3")
+                                break;
+
+                            case 'f':
+                                playAnimation("dance4")
+                                break;
+
+                            case 'g':
+                                playAnimation("dance5")
+                                break;
+
+                            case 'h':
+                                playAnimation("dance6")
+                                break;
+                            case 'j':
+                                playAnimation("dance7")
+                                break;
+
+                        }
+                    });
 
                     // helper.setPhysics(mesh);
                     // helper.unifyAnimationDuration({afterglow: 1.0});
@@ -745,19 +805,85 @@ function getCameraConstant( camera ) {
     return window.innerHeight / ( Math.tan( THREE.Math.DEG2RAD * 0.5 * camera.fov ) / camera.zoom );
 }
 
+
+
+function playAnimation(name){
+
+    //actionList.push( motionObj[name] );
+
+    isIdling = false;
+
+    window.stopList = window.stopList.concat( window.playList.splice(0,window.playList.length) );
+    window.stopList.forEach((value,index)=>{
+
+        if( value._clip.name == name ){
+            window.playList = window.stopList.splice(index,1);
+            window.playList[0].time = 0;
+            window.playList[0].play();
+        }
+    })
+
+}
+window.playAnimation = playAnimation;
+
+
+function backToIdling(){
+    window.stopList = window.stopList.concat( window.playList.splice(0,window.playList.length) );
+    window.stopList.forEach((value,index)=>{
+        if( value._clip.name == "dance1" ){
+            window.playList = window.stopList.splice(index,1);
+            window.playList[0].play();
+        }
+    })
+}
+
+
 function animate() {
     requestAnimationFrame( animate );
     soundCloud.update();
 
+    rl1 += 0.003;
+    if( rl1 > 6.28 )rl1 -= 6.28;
+
+    // camera.position.z = mmdMesh.skeleton.bones[0].position.z*0.4;
+    // camera.position.x = mmdMesh.skeleton.bones[0].position.x*0.4;
+    // camera.position.y = mmdMesh.skeleton.bones[0].position.y*0.4;
+
+    camera.position.x = 2.0 * Math.cos(rl1);
+    camera.position.y = 1.0;
+    camera.position.z = /*-2.0 + */2.0 * Math.sin(rl1);
+
+    light.position.x = camera.position.x;
+    light.position.y = camera.position.y;
+    light.position.z = camera.position.z;
+
+    if( window.mmdMesh ){
+        cameraLookAt2.x += (mmdMesh.skeleton.bones[0].position.x*0.00 - cameraLookAt2.x )/10.0;
+        cameraLookAt2.y += (mmdMesh.skeleton.bones[0].position.y*0.00 - cameraLookAt2.y )/10.0;
+        cameraLookAt2.z += (mmdMesh.skeleton.bones[0].position.z*0.01 - cameraLookAt2.z )/10.0;
+    }
+    cameraLookAt.set(cameraLookAt2.x,cameraLookAt2.y,cameraLookAt2.z)
+    camera.lookAt(cameraLookAt);
+
     if( motionObj ){
-        for( var key in motionObj ){
-            if( key == window.animationState ){
-                motionObj[key].weight += ( 1 - motionObj[key].weight )/3;
-            }else{
-                motionObj[key].weight += ( 0 - motionObj[key].weight )/3;
+
+        window.playList.forEach((value) => {
+            value.weight += ( 1 - value.weight ) / 10;
+            // value.weight += 0.05;
+            if (value.weight > 0.9999) value.weight = 1;
+            if (value._clip.duration - 0.1 < value.time && isIdling == false ){
+                isIdling = true;
+                backToIdling();
             }
-            motionObj[key].action.weight = motionObj[key].weight;
-        }
+        });
+
+        window.stopList.forEach((value) => {
+            // console.log(value)
+            value.weight += ( 0 - value.weight ) / 10;
+            // value.weight -= 0.001;
+            if( value.weight < 0.0001)value.weight = 0;
+        });
+
     }
 
     render();
