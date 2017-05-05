@@ -17,8 +17,8 @@ class Motion1 extends React.Component {
             console.log($(this)[0].offsetTop)
             text.push({
                 x: $(this)[0].offsetLeft,
-                y: $(this)[0].offsetTop+50,
-                width: $(this).width()+1,
+                y: $(this)[0].offsetTop,
+                width: $(this).width(),
                 height: $(this).height(),
                 word: $(this)[0].innerHTML,
             });
@@ -31,6 +31,7 @@ class Motion1 extends React.Component {
     }
 
     render() {
+
         const parentProps = Object.assign({}, this.props);
         for (let key in PROP_TYPES) {
             if (parentProps.hasOwnProperty(key)) {
@@ -38,73 +39,33 @@ class Motion1 extends React.Component {
             }
         }
 
-        console.log( this.state.isClose)
-
-        // return(
-        //     <div>
-        //         <svg width="0" height="0">
-        //             <defs>
-        //                 <clipPath id="myClip">
-        //                     <rect x="0" y="0" width="40" height="30"/>
-        //                 </clipPath>
-        //             </defs>
-        //         </svg>
-        //
-        //         {/*<div className="tokens_clip">*/}
-        //         {/*<div>*/}
-        //             <svg width="100" height="100">
-        //                 <text x="0" y="30px" className="aa" >Textaa</text>
-        //             </svg>
-        //         {/*</div>*/}
-        //         {/*<div className="tokens_clip">Leee</div>*/}
-        //
-        //     </div>
-        // )
-
         return (
             <div {...parentProps}
                 className="motion-1">
 
-                <svg width="0" height="0">
-                    <defs>
-                    {this.state.text.map((value,index)=>{
-                        const delay = (this.state.isClose?index*0.02:(index*0.1  + (index%3) * 0.1 ));
-                        const style = {
-                            animation: (this.state.isClose?'scale1':'scale0') + ' 0.8s cubic-bezier(0.19, 1, 0.22, 1) ' + delay + 's forwards',
-                        };
-                        return <clipPath key={index} id={"clip-" + index}>
-                            <rect className={this.state.isClose?"init-scale1":"init-scale0"} style={style} x="-1" y="0" width={value.width+5*2+1} height={value.height+1}/>
-                        </clipPath>
-                    })}
-                    {this.state.text.map((value,index)=>{
-                        const delay = (this.state.isClose?index*0.02:(0.2+index*0.1  + (index%3) * 0.1));
-                        const style = {
-                            animation: (this.state.isClose?'scale1':'scale0') + ' 0.6s cubic-bezier(0.19, 1, 0.22, 1) ' + delay + 's forwards',
-                        };
-                        return <clipPath key={index} id={"clip2-" + index}>
-                            <rect className={this.state.isClose?"init-scale1":"init-scale0"} style={style} x="-1" y="0" width={value.width+5*2+1} height={value.height+1}/>
-                        </clipPath>
-                    })}
-                    </defs>
-                </svg>
-
                 <ul className="text-2">
                     {this.state.text.map((value,index)=>{
+                        const delay = (this.state.isClose?0.2+index*0.02:(index*0.1 + (index%3) * 0.1 ));
                         const style = {
-                            animation: 'transY 1.0s cubic-bezier(0.19, 1, 0.22, 1) ' + (index * 0.1  + (index%3) * 0.1) + 's forwards',
-                            clipPath:"url(#clip-" + index + ")",
+                            animation: 'transY 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) ' + (index * 0.1  + (index%3) * 0.1) + 's forwards,' +
+                                        (this.state.isClose?'scale1':'scale0') + ' 0.8s cubic-bezier(0.19, 1, 0.22, 1) ' + delay + 's forwards',
+                            left:value.x,
+                            top:value.y,
                         };
-                        return <li key={index} style={style} className="init-transY">{value.word}</li>
+                        return <li key={index} style={style} className={"init-transY "+(this.state.isClose?"init-scale1":"init-scale0")}>{value.word}</li>
                     })}
                 </ul>
 
                 <ul className="text-1">
                     {this.state.text.map((value,index)=>{
+                        const delay = (this.state.isClose?index*0.02:(0.3+index*0.1 + (index%3) * 0.1 ));
                         const style = {
-                            animation: 'transY 1.0s cubic-bezier(0.19, 1, 0.22, 1) ' + (0.2+index * 0.1  + (index%3) * 0.1) + 's forwards',
-                            clipPath:"url(#clip2-" + index + ")",
+                            animation: 'transY 0.5s cubic-bezier(0.175, 0.885, 0.42, 1.175) ' + (0.3+index * 0.1  + (index%3) * 0.1) + 's forwards,' +
+                                        (this.state.isClose?'scale1':'scale0') + ' '+(this.state.isClose?0.8:2.0)+'s cubic-bezier(0.19, 1, 0.22, 1) ' + delay + 's forwards',
+                            left:value.x,
+                            top:value.y,
                         };
-                        return <li key={index} style={style} className="init-transY">{value.word}</li>
+                        return <li key={index} style={style} className={"init-transY "+(this.state.isClose?"init-scale1":"init-scale0")}>{value.word}</li>
                     })}
                 </ul>
 

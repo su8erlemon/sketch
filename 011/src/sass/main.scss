@@ -194,7 +194,7 @@ body{
 
 
 body{
-  background-color: #4c2177;
+  background-color: #2A363B;
   //background-color: #989898;
 }
 
@@ -228,6 +228,12 @@ body{
   .dummy{
     visibility: hidden;
     position: absolute;
+    font-size: 0px;
+    li{
+      display: inline-block;
+      padding: 0 5px;
+      font-size: 50px;
+    }
   }
 
   svg{
@@ -238,64 +244,66 @@ body{
     width: 500px;
   }
 
-  ul li{
-    padding: 0 5px;
-    display: inline-block
-  }
-
   .text-1, .text-2{
     position: absolute;
     top: 0px;
     left: 0px;
+    li{
+      display: inline-block;
+      padding: 0 6px;
+    }
   }
 
   .text-1 li{
-    color: #4c2177;
-    background-color: #faf0d5;
+    color: #ffffff;
+    background-color: #3EC1D3;
   }
 
   .text-2 li{
-    color: #4c2177;
-    background-color: #33dfa0;
+    color: #ffffff;
+    background-color: #E84A5F;
   }
 
 }
 
 .init-scale0{
-  transform: scaleX(0);
+  position: absolute;
+  clip: rect(0px, 0px, 60px, 0px);
 }
 
 .init-scale1{
-  transform: scaleX(1);
+  position: absolute;
+  clip: rect(0px, 300px, 60px, 0px);
 }
 
 @-webkit-keyframes scale0{
   0% {
-    transform: scaleX(0);
+    clip: rect(0px, 0px, 60px, 0px);
   }
   100% {
-    transform: scaleX(1);
+    clip: rect(0px, 300px, 60px, 0px);
   }
 }
 
 @-webkit-keyframes scale1{
   0% {
-    transform: scaleX(1);
+    clip: rect(0px, 300px, 60px, 0px);
   }
   100% {
-    transform: scaleX(0);
+    clip: rect(0px, 0px, 60px, 0px);
   }
 }
 
 
 .init-transY{
-  transform: translateY(50px) translateX(10px);
+  transform: translateY(200%) rotate(5deg) translateX(20px);
 }
+
 @-webkit-keyframes transY{
   0% {
-    transform: translateY(50px) translateX(10px);
+    transform: translateY(200%) rotate(5deg) translateX(20px);
   }
   100% {
-    transform: translateY(0px) translateX(0px);
+    transform: translateY(0%) rotate(0deg) translateX(0px);
   }
 }
