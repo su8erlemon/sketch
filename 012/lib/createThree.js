@@ -13,10 +13,12 @@ function init() {
 
     const renderer = new THREE.WebGLRenderer({
         canvas: document.getElementById("canvas"),
-        antialias: true // default enabled
+        antialias: true, // default enabled
+        alpha: true,
     });
 
-    renderer.setClearColor(0x000000, 1.0);
+    // renderer.setClearColor(0x222222, 1.0);
+    renderer.setClearColor(0x395F8F, 0.0);
     renderer.setSize(width, height);
     renderer.setPixelRatio(dpr);
 
@@ -25,7 +27,7 @@ function init() {
     // camera = new THREE.OrthographicCamera( 1 / - 2, 1 / 2, 1 / 2, 1 / - 2, 1, 1000 )
     // camera.position.set(0, 0, -1)
 
-    const camera = new THREE.PerspectiveCamera(75, width / height, 1, 1000);
+    const camera = new THREE.PerspectiveCamera(90, width / height, 0.01, 1000);
     camera.position.set(0, 1, -3);
     camera.lookAt(new THREE.Vector3());
 
