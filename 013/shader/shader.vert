@@ -31,25 +31,25 @@ vec3 makeNose(vec3 pos){
   return (pos) + ( cnoise3((pos)*1.0 + time*0.8 )*0.3);
 }
 
-vec3 closePoint(vec3 pos, float offsetT, float offsetP){
+vec3 getNeighbour(vec3 orig, float offsetT, float offsetP){
 
   // xyz -> Spherical coordinates
-  float r = sqrt(pos.x*pos.x + pos.y*pos.y + pos.z*pos.z);
-  float theta = acos(pos.z/r);
-  float mm = (pos.y>=0.?1.:-1.);
-  float phai = mm * acos(pos.x/sqrt(pos.x*pos.x + pos.y*pos.y));
+  float r = sqrt(orig.x*orig.x + orig.y*orig.y + orig.z*orig.z);
+  float theta = acos(orig.z/r);
+  float sgn = (orig.y>=0.?1.:-1.);
+  float phi = sgn * acos(orig.x/sqrt(orig.x*orig.x + orig.y*orig.y));
 
-  // offset
+  // add offset
   theta += offsetT;
-  phai += offsetP;
+  phi += offsetP;
 
   // Spherical coordinates -> xyz
-  float x = r * sin(theta) * cos(phai);
-  float y = r * sin(theta) * sin(phai);
+  float x = r * sin(theta) * cos(phi);
+  float y = r * sin(theta) * sin(phi);
   float z = r * cos(theta);
 
   return vec3( x, y, z );
-//  return vec3( pos.x, pos.y, pos.z);
+  
 }
 
 
@@ -72,8 +72,8 @@ void main() {
   // calculating two other positions with a small offset, then get the cross product.
   // ref.) https://www.opengl.org/discussion_boards/showthread.php/165885-Question-about-calculating-vertex-normals?p=1173292&viewfull=1#post1173292
   float gridOffset	= 0.001;
-  vec3 neighbour1	= makeNose(closePoint(position+vec3(0.001)/*for specfic point(0,0,0)*/, gridOffset, 0.        ));
-  vec3 neighbour2	= makeNose(closePoint(position+vec3(0.001)/*for specfic point(0,0,0)*/, 0.        , gridOffset));
+  vec3 neighbour1	= makeNose(getNeighbour(position+vec3(0.001)/*for specfic point(0,0,0)*/, gridOffset, 0.        ));
+  vec3 neighbour2	= makeNose(getNeighbour(position+vec3(0.001)/*for specfic point(0,0,0)*/, 0.        , gridOffset));
 
   vec3 tangent	= neighbour1 - pos;
   vec3 bitangent= neighbour2 - pos;

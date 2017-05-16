@@ -33,18 +33,20 @@ let box1, box2;
 
 
 // Make cube texture
-var path = './img/SwedishRoyalCastle/';
-var urls = [
-    path + "nx.jpg",
-    path + "ny.jpg",
-    path + "nz.jpg",
-    path + "px.jpg",
-    path + "py.jpg",
-    path + "pz.jpg",
-];
-var textureCube = THREE.ImageUtils.loadTextureCube( urls );
+// var path = './img/SwedishRoyalCastle/';
+// var urls = [
+//     path + "nx.jpg",
+//     path + "ny.jpg",
+//     path + "nz.jpg",
+//     path + "px.jpg",
+//     path + "py.jpg",
+//     path + "pz.jpg",
+// ];
+// var textureCube = THREE.ImageUtils.loadTextureCube( urls );
 
 
+
+// var matcappath = "ceramic_alien.png";
 
 // load a resource
 loader.load(
@@ -68,6 +70,7 @@ loader.load(
             time : { type: "f", value: 0 },
             texture1: { type: "t", value: texture },
             tMatCap: { type: "t", value: THREE.ImageUtils.loadTexture( 'img/matcap2_.jpg' ) },
+            // tMatCap: { type: "t", value: THREE.ImageUtils.loadTexture( 'img/matcaps/' + matcappath ) },
         }
 
         let shaderMaterial =
