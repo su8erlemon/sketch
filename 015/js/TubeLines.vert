@@ -104,7 +104,8 @@ void main() {
 //  vPostion = vec4(modelViewMatrix * vec4(pos,1.0)).xyz;
   vPostion =  pos;
 
-  vNormal = norm;
+//  vNormal = norm;
+  vNormal = normalMatrix * normal;
   vModelViewMatrix = modelViewMatrix;
   vNormalMatrix = normalMatrix;
 

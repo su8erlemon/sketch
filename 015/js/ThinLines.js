@@ -8,7 +8,7 @@ export default class ThinLines{
 
     init( scene ){
 
-        var material = new THREE.LineBasicMaterial( { color : 0x000000 } );
+        var material = new THREE.LineBasicMaterial( { color : 0x333333 } );
 
         for( let i = 0 ; i < 10 ; i++ ){
 

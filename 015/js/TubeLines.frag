@@ -29,12 +29,12 @@ void main() {
 
 
 
-  vec2 vUv2 = vUv + vec2(time*0.3,time*0.3);
-//  vec2 vUv2 = vUv + vec2(0.0,time*0.1);
+//  vec2 vUv2 = vUv + vec2(time*0.3,time*0.3);
+  vec2 vUv2 = vUv + vec2(time*0.1,0.0);
 //  vec2 vUv2 = vUv + vec2(time*0.3,time*0.3);
   vec4 color = texture2D( texture1, vUv2 );
 //
-//  if( color.x <= 0.9 )discard;
+  if( color.x <= 0.8 )discard;
 
 
   vNormalMatrix;
@@ -56,8 +56,8 @@ void main() {
   vec2 vN = r.xy / m + .5;
 
   vec3 base;
-  base = texture2D( tMatCap, vN ).rgb;
+  base = texture2D( tMatCap, vN ).rgb + color.xyz;
 
-  gl_FragColor = vec4( base, 1. );
+  gl_FragColor = vec4( base, .8 );
 
 }

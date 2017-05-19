@@ -10,6 +10,7 @@ function init() {
 
     // Scale for retina
     const dpr = Math.min(1.5, window.devicePixelRatio);
+    // const dpr = 0.5;//Math.min(1.5, window.devicePixelRatio);
 
     const renderer = new THREE.WebGLRenderer({
         canvas: document.getElementById("canvas"),
@@ -18,7 +19,7 @@ function init() {
     });
 
     // renderer.setClearColor(0x12121, 1.0);
-    renderer.setClearColor(0x222222, 1.0);
+    renderer.setClearColor(0x111111, 1.0);
     // renderer.setClearColor(0x7DB4B5, 1.0);
     // renderer.setClearColor(0x395F8F, 0.0);
     renderer.setSize(width, height);
@@ -29,7 +30,7 @@ function init() {
     // camera = new THREE.OrthographicCamera( 1 / - 2, 1 / 2, 1 / 2, 1 / - 2, 1, 1000 )
     // camera.position.set(0, 0, -1)
 
-    const camera = new THREE.PerspectiveCamera(55, width / height, 0.01, 1000);
+    const camera = new THREE.PerspectiveCamera(75, width / height, 0.01, 1000);
     camera.position.set(0, 0, 5);
     camera.lookAt(new THREE.Vector3());
 
