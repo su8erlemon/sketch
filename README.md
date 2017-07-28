@@ -23,3 +23,4 @@ Bunch of tiny re-useable material. These stuff would become good project parts s
 ![alt tag](https://github.com/su8erlemon/sketch/blob/master/019/img.gif =250x)
 ![alt tag](https://github.com/su8erlemon/sketch/blob/master/020/img.gif =250x)
 ![alt tag](https://github.com/su8erlemon/sketch/blob/master/021/img.gif =250x)
+<img src="https://github.com/su8erlemon/sketch/blob/master/021/img.gif" width="48">
