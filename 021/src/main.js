@@ -15,12 +15,7 @@ ReactDOM.render(
         </div>
 
         <div>
-            <Btn1 text="Hover AAAAA"/>
-        </div>
-
-
-        <div>
-            <TextEffect text="WHITE BOARD" act={true}/>
+            <TextEffect text="WHITE BOARD" act={false}/>
         </div>
 
     </div>,
