@@ -165,7 +165,7 @@ function animate() {
     soundCloud.update();
 
     material.uniforms.time.value += guiData.speed;
-    material.uniforms.gain.value = 0;
+    material.uniforms.gain.value = 50;
 
     requestAnimationFrame( animate );
 
