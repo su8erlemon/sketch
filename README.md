@@ -19,7 +19,5 @@ Bunch of tiny re-useable material. These stuff would become good project parts s
 [![Sketch 015](https://github.com/su8erlemon/sketch/blob/master/015/ss.png)](https://github.com/su8erlemon/sketch/tree/master/015)
 [![Sketch 016](https://github.com/su8erlemon/sketch/blob/master/016/ss.png)](https://github.com/su8erlemon/sketch/tree/master/016)
 [![Sketch 017](https://github.com/su8erlemon/sketch/blob/master/017/ss.png)](https://github.com/su8erlemon/sketch/tree/master/017)
-[![Sketch 018](https://github.com/su8erlemon/sketch/blob/master/018/ss.png)](https://github.com/su8erlemon/sketch/tree/master/018)
 [![Sketch 019](https://github.com/su8erlemon/sketch/blob/master/019/ss.png)](https://github.com/su8erlemon/sketch/tree/master/019)
-[![Sketch 020](https://github.com/su8erlemon/sketch/blob/master/020/ss.png)](https://github.com/su8erlemon/sketch/tree/master/020)
 [![Sketch 021](https://github.com/su8erlemon/sketch/blob/master/021/ss.png)](https://github.com/su8erlemon/sketch/tree/master/021)
