@@ -1,0 +1,275 @@
+@charset "utf-8";
+
+//============================================================
+// constant value
+//============================================================
+
+$BS-HEIGHT-SM: 570;
+
+//following bootstrap size
+$BS-WIDTH-SM: 768-1;
+$BS-WIDTH-MD: 992-1;
+$BS-WIDTH-LG: 1170-1;
+
+
+//============================================================
+// font setting
+//============================================================
+
+@font-face {
+  font-family: "LemonMilk";
+  src: url("./fonts/LemonMilk.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "LemonMilk-light";
+  src: url("./fonts/LemonMilklight.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "LemonMilk-bold";
+  src: url("./fonts/LemonMilkbold.otf") format("opentype");
+}
+
+@mixin font-default( $size, $line-height, $letter-spacing, $weight ){
+  //$rem: $size / 10;
+  font-size: #{$size};
+  //font-size: #{$rem}rem;
+  letter-spacing: $letter-spacing;
+  font-weight: $weight;
+  line-height: $line-height;
+}
+
+
+@mixin font-LemonMilk-reg( $size:16px, $line-height:1.5, $letter-spacing:0px ){
+  font-family: "LemonMilk",sans-serif;
+  @include font-default( $size, $line-height, $letter-spacing, normal );
+}
+
+@mixin font-LemonMilk-light( $size:16px, $line-height:1.5, $letter-spacing:0px ){
+  font-family: "LemonMilk-light",sans-serif;
+  @include font-default( $size, $line-height, $letter-spacing, normal );
+}
+
+@mixin font-LemonMilk-bold( $size:16px, $line-height:1.5, $letter-spacing:0px ){
+  font-family: "LemonMilk-bold",sans-serif;
+  @include font-default( $size, $line-height, $letter-spacing, normal );
+}
+
+@mixin font-Futura-reg( $size:16px, $line-height:1.5, $letter-spacing:0px ){
+  font-family: Futura, 'Nunito', sans-serif;
+  @include font-default( $size, $line-height, $letter-spacing, normal );
+}
+//
+//@mixin font-CircularStd-Regular( $size:16, $line-height:1.5, $letter-spacing:0px ){
+//  @include font-CircularStd( $size, $line-height, $letter-spacing, 400 );
+//}
+//
+//
+//@mixin font-Helvetica( $size, $line-height, $letter-spacing, $weight ) {
+//  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+//  @include font-default($size, $line-height, $letter-spacing, $weight );
+//}
+//
+//@mixin font-Helvetica-Bold( $size:16, $line-height:1.5, $letter-spacing:0px ){
+//  @include font-Helvetica( $size, $line-height, $letter-spacing, 700 );
+//}
+//
+//@mixin font-Helvetica-Regular( $size:16, $line-height:1.5, $letter-spacing:0px ){
+//  @include font-Helvetica( $size, $line-height, $letter-spacing, 400 );
+//}
+
+
+
+//============================================================
+// wrap mediascreen
+//============================================================
+
+/*
+
+  @include max-width-screen($MOBILE-WIDTH) {
+    //something
+  }
+
+*/
+
+
+@mixin max-width-screen($break-point) {
+  @media screen and (max-width: #{$break-point}px) {
+    @content;
+  }
+}
+
+@mixin min-width-screen($break-point) {
+  @media screen and (min-width: #{$break-point}px) {
+    @content;
+  }
+}
+
+@mixin max-height-screen($break-point) {
+  @media screen and (max-height: #{$break-point}px) {
+    @content;
+  }
+}
+
+@mixin min-height-screen($break-point) {
+  @media screen and (min-height: #{$break-point}px) {
+    @content;
+  }
+}
+
+@mixin max-screen($break-point_w,$break-point_h) {
+  @media screen and (max-width: #{$break-point_w}px) and (max-height: #{$break-point_h}px) {
+    @content;
+  }
+}
+
+
+
+*{
+  margin: 0px;
+  padding: 0px;
+}
+
+html, body,.container{
+  width: 100%;
+  height: 100%;
+}
+
+body{
+  position: relative;
+}
+
+
+.tokens_clip{
+
+  text{
+    //font-size: 40px;
+    //color: #fff;
+    clip-path: url(#myClip);
+  }
+}
+
+.aa{
+  fill: red;
+  font-size: 50px;
+  clip-path: url(#myClip);
+}
+
+body{
+  //background-color: #2A363B;
+  background-color: #000;
+}
+
+.borderBtn{
+
+  @include font-LemonMilk-reg(12px, 1, 1.9px);
+  cursor: pointer;
+
+  display: inline-block;
+  border: solid 2px #ffffff;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+
+  .borderBtn--text{
+    transition: transform 500ms cubic-bezier(0.19, 1, 0.22, 1);
+    padding: 8px 10px;
+    transform: translateY(0%)
+  }
+
+  .borderBtn--fill{
+    background-color: #fff;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+
+    transition: transform 500ms cubic-bezier(0.19, 1, 0.22, 1);
+    transition-delay: 0ms;
+    transform: translateY(250%) rotate(25deg) scaleX(1.4);
+  }
+
+  .borderBtn--fillText{
+    color: #000000;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    padding: 8px 10px;
+    width: 100%;
+    height: 100%;
+
+    transition: transform 500ms cubic-bezier(0.19, 1, 0.22, 1);
+    transition-delay: 0ms;
+    transform: translateY(100%)
+  }
+
+  &:hover{
+
+    .borderBtn--text{
+      transform: translateY(-100%);
+    }
+
+    .borderBtn--fill{
+      transform: translateY(0%) rotate(0deg) scaleX(1.4);
+      transition-delay: 100ms;
+    }
+
+    .borderBtn--fillText{
+      transform: translateY(0%);
+      transition-delay: 200ms;
+    }
+  }
+}
+
+
+
+.textEffect{
+
+  @include font-LemonMilk-reg(20px, 1, 1.9px);
+  cursor: pointer;
+
+  display: inline-block;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+
+  .textEffect--text{
+    span{
+      display: inline-block;
+      min-width: 8px;
+      margin-right: 2px;
+      transform: translateY(100%);
+      transition: transform 500ms cubic-bezier(0.19, 1, 0.22, 1);
+    }
+  }
+
+  &.isAct {
+    .textEffect--text {
+      span{
+        transform: translateY(0%);
+      }
+    }
+  }
+
+}
+
+
+#root{
+  width: 100%;
+  height: 100%;
+}
+
+.center{
+  position: absolute;
+
+  top:0px;
+  left:0px;
+  right:0px;
+  bottom:0px;
+
+  width: 480px;
+  height: 58*3px;
+  margin: auto;
+}
