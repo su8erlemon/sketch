@@ -193,7 +193,7 @@ var shaderMaterial =
 shaderMaterial.extensions.derivatives = true;
 shaderMaterial.extensions.drawBuffers = true;
 
-// var box1 = new THREE.Mesh(new THREE.BoxGeometry(1,1,1), shaderMaterial)
+// var box1 = new THREE.Mesh(new THREE.BoxGeometry(1,1,1,128,128), shaderMaterial)
 // var box1 = new THREE.Mesh(new THREE.BoxGeometry(15,0.01,15), shaderMaterial)
 // var box1 = new THREE.Mesh(new THREE.BoxGeometry(15,0.01,15), mat)
 // var box1 = new THREE.Mesh(new THREE.PlaneGeometry(1.0,1.0,256*2,256*2), shaderMaterial);
