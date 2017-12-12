@@ -13,13 +13,16 @@ varying vec3 vPostion;
 varying vec3 vWorldPosition;
 varying mat4 vModelViewMatrix;
 varying mat3 vNormalMatrix;
+varying vec3 vViewPosition;
 
 // chunk(shadowmap_pars_vertex);
 
+
 vec3 makeNose(vec3 pos, vec2 uv2){
-//  return  (pos);
-//    return  (pos) + (normal * texture2D( mtex2, uv2 ).r) * 0.07;
-    return  (pos) - (normal * texture2D( tMatCap2, uv2 ).r) * 0.03;
+  return  (pos);
+//    return  (pos) + (normal * texture2D( mtex2, uv2 ).r) * 0.02;
+//    return  (pos) + (normal * texture2D( tMatCap2, uv2 ).r) * 0.02;
+//    return  (pos) + (normal * texture2D( tMatCap2, uv2 ).r) * 0.2 + (normal * texture2D( mtex2, uv2 + time*.1 ).r) * 0.07 ;
 //    return  (pos) + (normal * texture2D( tMatCap2, uv2 ).r) * 0.2 + (normal * texture2D( mtex2, uv2 + time*.1 ).r) * 0.07 ;
 //    return  (pos) + (normal) * 0.1 - cnoise3(pos*2.0)*0.3;
 //  return  (pos) - cnoise3((pos))*0.3;
@@ -50,9 +53,9 @@ vec3 getNeighbour(vec3 orig, float offsetT, float offsetP){
 
 void main() {
 
-  vUv = uv;
+  vUv = uv*2.0;
+  vUv.x *= 2.0;
 
-//  vUv.x *= 2.0;
   vec3 pos = makeNose(position+vec3(0.001), vUv);
 
   float gridOffset	= 0.001;
@@ -83,8 +86,13 @@ void main() {
   // store the world position as varying for lighting
   vWorldPosition = worldPosition.xyz;
 
-  vNormal = norm;
+//  vNormal = norm;
+//  vNormal = normalize( normalMatrix * normal );
+  vNormal = normalize( normalMatrix * normal );
   vModelViewMatrix = modelViewMatrix;
   vNormalMatrix = normalMatrix;
+  vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+  vViewPosition = -mvPosition.xyz;
+
 
 }

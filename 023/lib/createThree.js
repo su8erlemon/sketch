@@ -26,9 +26,12 @@ function init() {
     // camera = new THREE.OrthographicCamera( 1 / - 2, 1 / 2, 1 / 2, 1 / - 2, 1, 1000 )
     // camera.position.set(0, 0, -1)
 
-    const camera = new THREE.PerspectiveCamera(75, width / height, 0.01, 1000);
-    // camera.position.set(1, 1, -1.);
-    camera.position.set(0, 0, -1.);
+    const camera = new THREE.PerspectiveCamera(55, width / height, 0.01, 1000);
+    // camera.position.set(.6, 1.0, -0.8);
+    // camera.position.set(0, 0, -2.8);
+    camera.position.set(0, 0, 1.2);
+    // camera.position.set(0, 0, -2.0);
+    // camera.position.set(0, -0.3, -0.2);
     camera.lookAt(new THREE.Vector3());
 
     const controls = new OrbitControls(camera);
