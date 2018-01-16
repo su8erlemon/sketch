@@ -9,14 +9,16 @@ function init() {
     height = window.innerHeight;
 
     // Scale for retina
-    const dpr = Math.min(1.5, window.devicePixelRatio);
+    const dpr = Math.min(2.0, window.devicePixelRatio);
 
     const renderer = new THREE.WebGLRenderer({
         canvas: document.getElementById("canvas"),
-        antialias: true // default enabled
+        alpha: true,
+        // premultipliedAlpha:true,
+        antialias: false // default enabled
     });
 
-    renderer.setClearColor(0x000000, 1.0);
+    renderer.setClearColor(0x000022, 1.0);
     renderer.setSize(width, height);
     renderer.setPixelRatio(dpr);
 
@@ -25,11 +27,19 @@ function init() {
     // camera = new THREE.OrthographicCamera( 1 / - 2, 1 / 2, 1 / 2, 1 / - 2, 1, 1000 )
     // camera.position.set(0, 0, -1)
 
-    const camera = new THREE.PerspectiveCamera(75, width / height, 1, 10000);
-    camera.position.set(0, 1, -3);
+    const camera = new THREE.PerspectiveCamera(55, width / height, .9, 10000);
+    // camera.position.set(0, 0, -2);
+    // camera.position.set(1.0, -1.0, -2.0);
+    camera.position.set(0.4281834255072691, -3.2440919366235637, -0.6294706491847175);
+    
     camera.lookAt(new THREE.Vector3());
+    window.camera = camera;
+    // camera.rotation.x = -1.2
 
     const controls = new OrbitControls(camera,document.getElementById("canvas"));
+    // const controls = {};
+
+    // camera.rotation.x = -1.2
 
     window.addEventListener('resize', resize);
 

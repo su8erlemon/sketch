@@ -22,6 +22,9 @@
     "uglify-js": "^2.7.5"
   },
   "dependencies": {
-    "three": "^0.84.0"
+    "adaptive-bezier-curve": "^1.0.3",
+    "glsl-noise": "0.0.0",
+    "three": "^0.84.0",
+    "three-line-2d": "^1.1.6"
   }
 }
