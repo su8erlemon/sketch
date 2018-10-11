@@ -52,9 +52,9 @@ window.setZ = function( v ){
 
 
 let Params = function () {
-    this.f1 = 572;
-    this.f2 = 0.00085;
-    this.f3 = 0.0;
+    this.f1 = 182;
+    this.f2 = 0.0036;
+    this.f3 = -0.12;
 
     this.lineWidth = 0.1;
 };
@@ -153,46 +153,76 @@ CustomSinCurve.prototype.getPoint = function ( t ) {
 
 };
 
-
-for( var i = 0 ; i < 5 ; i ++ ){
-    var path = new CustomSinCurve( 2.2-i*1.23 );
-    var geometry = new THREE.TubeGeometry( path, 100, .006, 3 );
+var meshs = [];
+for( var i = 0 ; i < 40 ; i ++ ){
+    var path = new CustomSinCurve( 2.2-i*0.07 );
+    var geometry = new THREE.TubeGeometry( path, 100, .001, 3 );
     var material = new THREE.MeshBasicMaterial( { color: 0xffffff } );
     var mesh = new THREE.Mesh( geometry, material );
     scene.add( mesh );
     var matDepth2222 = new THREE.MeshDepthMaterial();
     var depthMesh = new THREE.Mesh( geometry, matDepth2222 );
     depthScene.add( depthMesh );
-    depthMesh.position.z = mesh.position.z = 0.3*i;
+    depthMesh.position.z = mesh.position.z = 0.01*i;
+
+    meshs.push(mesh);
+    meshs.push(depthMesh);
     // depthMesh.position.y = mesh.position.y = 0.4*i;
     // depthMesh.position.y = mesh.position.y = -0.1*i;
+
+    // for( var k = 0 ; k < 10 ; k ++ ){
+    //     var geometry1 = new THREE.BoxGeometry( 0.01, 0.01, 0.01 );
+    //     var material1 = new THREE.MeshBasicMaterial( { color: 0xffffff } );
+    //     var mesh1 = new THREE.Mesh( geometry1, material1 );
+    //     mesh1.position.x = i*0.07 * Math.sin(k*0.5);
+    //     mesh1.position.y = i*0.07 * Math.cos(k*0.5);
+    //     mesh1.position.z = depthMesh.position.z;
+    //     scene.add( mesh1 );
+    // }
 }
 
-for( var i = 0 ; i < 5 ; i ++ ){
-// var geometrySphere = new THREE.IcosahedronGeometry( 1.0, 1 );
-var geometrySphere = new THREE.TorusKnotGeometry( .5 + i * .5, 0.01, 200, 3 );
-var materialS = new THREE.MeshBasicMaterial( { wireframe:false, color: 0xffffff } );
-var meshS = new THREE.Mesh( geometrySphere, materialS );
-scene.add( meshS );
-var matDepth12 = new THREE.MeshDepthMaterial();
-// matDepth12.wireframe = true;
-var meshD = new THREE.Mesh( geometrySphere, matDepth12 );
-depthScene.add( meshD );
-}
+
+// var shpes = [];
+// for( var i = 0 ; i < 1 ; i++ ){
+//     var geometrySphere = new THREE.IcosahedronGeometry( 0.03 + i * 0.38, 1 );
+//     var materialS = new THREE.MeshBasicMaterial( { wireframe:true, color: 0xffffff } );
+//     var meshS = new THREE.Mesh( geometrySphere, materialS );
+//     scene.add( meshS );
+//     var matDepth12 = new THREE.MeshDepthMaterial();
+//     matDepth12.wireframe = true;
+//     var meshD = new THREE.Mesh( geometrySphere, matDepth12 );
+//     depthScene.add( meshD );
+
+//     meshS.position.z = meshD.position.z = -0.2;
+
+//     shpes.push( meshD);
+//     shpes.push( meshS);
+// }
+
+var geometrySphere1 = new THREE.TorusKnotGeometry( 0.4, 0.003, 10, 3 );
+var materialS1 = new THREE.MeshBasicMaterial( { wireframe:false, color: 0xffffff } );
+var meshS1 = new THREE.Mesh( geometrySphere1, materialS1 );
+scene.add( meshS1 );
+var matDepth121 = new THREE.MeshDepthMaterial();
+matDepth121.wireframe = false;
+var meshD1 = new THREE.Mesh( geometrySphere1, matDepth121 );
+depthScene.add( meshD1 );
+meshS1.position.z = meshD1.position.z = -0.3
+// meshS1.position.x = meshD1.position.x = 0.1;
 
 
 
 
 var mainComposer = new THREE.EffectComposer( renderer );
 
-const SIZE = 1024*2;
+const SIZE = 1024;
 // var ren = new THREE.RenderPass( scene2, camera,null, new THREE.Color().setHex( 0xffffff ) )
 let ren = new THREE.RenderPass( scene, camera);
 // ren.clear = false;
 
 let width = $(window).width();
 let height = $(window).height();
-const dpr = Math.min(2.0,window.devicePixelRatio);
+const dpr = Math.min(1.0,window.devicePixelRatio);
 mainComposer.addPass( ren );
 mainComposer.setSize( width*dpr, height*dpr );
 
@@ -255,7 +285,7 @@ mainComposer.addPass(pass2);
 
 
 var rGBShiftShader = new THREE.ShaderPass( THREE.RGBShiftShader );
-rGBShiftShader.uniforms[ 'amount' ].value = 0.0014;
+rGBShiftShader.uniforms[ 'amount' ].value = 0.001;
 mainComposer.addPass( rGBShiftShader );
 rGBShiftShader.renderToScreen = true;
 
@@ -279,6 +309,7 @@ function aa(){
     
     return weight;
 }
+window.aa = aa;
 
 // var pass2 = new THREE.ShaderPass(THREE.Pass2);
 // mainComposer.addPass(pass2);
@@ -289,18 +320,35 @@ function aa(){
 // copyShader.renderToScreen = true;
 // mainComposer.addPass(copyShader);
 
-
+var rl2 = 0.0;
 render();
 // render();
 
+
 function render() {
 
-    rl += 0.001;
+    rl += 0.00001;
     if( rl > 6.28 )rl -= 6.28;
 
-    camera.position.x = 2.379618582068291 * Math.sin(rl);
-    camera.position.y = -3.2440919366235637 * Math.cos(rl);
-    camera.lookAt(new THREE.Vector3());
+    rl2 += 0.0001;
+    if( rl2 > 6.28 )rl2 -= 6.28;
+    
+    
+
+    
+    // for( var i = 0 ; i < shpes.length; i+=2){
+    //     shpes[i].rotation.x = shpes[i+1].rotation.x = Math.sin((i + 3)*rl2);
+    //     shpes[i].rotation.z = shpes[i+1].rotation.z = Math.sin((i + 4)*rl2);
+    // }
+
+
+    for( var i = 0 ; i < meshs.length; i+=2){
+        meshs[i].scale.x = meshs[i+1].scale.x = meshs[i].scale.y = meshs[i+1].scale.y = Math.sin(rl*parseInt(i/2)) + 1.0;
+        meshs[i].position.z = meshs[i+1].position.z = Math.sin(rl*parseInt(i/2)) * 0.1;
+    }
+    // camera.position.x = 2.379618582068291 * Math.sin(rl);
+    // camera.position.y = -3.2440919366235637 * Math.cos(rl);
+    // camera.lookAt(new THREE.Vector3());
     // meshD.rotation.x += 0.01;
     // meshS.rotation.x += 0.01;
     // meshD.position.y = Math.sin(rl)*2.0; 
@@ -319,6 +367,8 @@ function render() {
     tex1Composer.render();
     tex2Composer.render();
 
+    meshS1.rotation.z = meshD1.rotation.z = Math.sin(rl2)
+    
     pass1.uniforms.weight.value = aa();
     pass2.uniforms.weight.value = aa();
 
