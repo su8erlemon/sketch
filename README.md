@@ -23,4 +23,6 @@ This repository is for my visual small experiments. The goal is to store tiny co
 [![Sketch 021](https://github.com/su8erlemon/sketch/blob/master/021/ss.png)](https://github.com/su8erlemon/sketch/tree/master/021)
 [![Sketch 022](https://github.com/su8erlemon/sketch/blob/master/022/ss.png)](https://github.com/su8erlemon/sketch/tree/master/022)
 [![Sketch 026](https://github.com/su8erlemon/sketch/blob/master/026/ss.png)](https://github.com/su8erlemon/sketch/tree/master/026)
-[![Sketch 032](https://github.com/su8erlemon/sketch/blob/master/026/ss.png)](https://github.com/su8erlemon/sketch/tree/master/032)
+[![Sketch 032](https://github.com/su8erlemon/sketch/blob/master/032/ss.png)](https://github.com/su8erlemon/sketch/tree/master/032)
+[![Sketch 038](https://github.com/su8erlemon/sketch/blob/master/038/ss.png)](https://github.com/su8erlemon/sketch/tree/master/038)
+[![Sketch 039](https://github.com/su8erlemon/sketch/blob/master/039/ss.png)](https://github.com/su8erlemon/sketch/tree/master/039)
